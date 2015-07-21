@@ -1,0 +1,21 @@
+// 
+// English Language File for MediaGalleryObject Plugin
+//
+
+<!-- language file start -->
+configuration#:#Configuration
+template#:#Template
+demo#:#Demo
+demo_info#:#After
+placeholder#:#Placeholder
+placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :number (e.g. [firstname:3]) the value of the placeholder will be cut to this number.
+string_to_lower#:#Lowercased
+camel_case#:#camelCase
+context#:#Context
+number#:#Serial Number
+hash#:#Random String
+placeholder_standard#:#Standard
+placeholder_udf#:#Custom Fields
+context_registration#:#Registration
+context_administration#:#Administration
+context_ldap#:#LDAP Authentication
