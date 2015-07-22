@@ -57,6 +57,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$form->addCommandButton("save", $lng->txt("save"));
 
 		$template = new ilTextInputGUI($pl->txt("template"), "xagu_template");
+		$template->setInfo($pl->txt('template_info'));
 		$template->setRequired(true);
 		$template->setValue($this->config->getLoginTemplate());
 		$form->addItem($template);
@@ -73,7 +74,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$placeholder->setTextfieldId("xagu_template");
 		$placeholder->setPlaceholderAdvice($pl->txt("placeholder_advice"));
 
-		//$placeholder->addSection($pl->txt('placeholder_standard'));
+		$placeholder->addSection($pl->txt('placeholder_standard'));
 		foreach($this->getStandardPlaceholder() as $text => $title)
 		{
 			$placeholder->addPlaceholder($title, $text);
@@ -82,7 +83,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 		if(count($udf) > 0)
 		{
-			//$placeholder->addSection($pl->txt('placeholder_udf'));
+			$placeholder->addSection($pl->txt('placeholder_udf'));
 			foreach($this->getUDFPlaceholder() as $text => $title)
 			{
 				$placeholder->addPlaceholder($title, $text);
@@ -93,10 +94,12 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$form->addItem($placeholder);
 
 		$string_to_lower = new ilCheckboxInputGUI($pl->txt("string_to_lower"), "xagu_string_to_lower");
+		$string_to_lower->setInfo($pl->txt('string_to_lower_info'));
 		$string_to_lower->setChecked($this->config->getStringToLower());
 		$form->addItem($string_to_lower);
 
 		$camelCase = new ilCheckboxInputGUI($pl->txt("camel_case"), "xagu_camel_case");
+		$camelCase->setInfo($pl->txt('camel_case_info'));
 		$camelCase->setChecked($this->config->getUseCamelCase());
 		$form->addItem($camelCase);
 

@@ -98,8 +98,6 @@ class ilPlaceholdersPropertyGUI extends ilFormPropertyGUI
 
 		foreach($this->item as $data)
 		{
-			$subtpl->setCurrentBlock("item");
-
 			if($data['section'])
 			{
 				$subtpl->setCurrentBlock("section");
@@ -114,9 +112,6 @@ class ilPlaceholdersPropertyGUI extends ilFormPropertyGUI
 				$subtpl->setVariable("PLACEHOLDER_TITLE", $data['title']);
 				$subtpl->parseCurrentBlock();
 			}
-
-
-			$subtpl->parseCurrentBlock();
 		}
 
 		

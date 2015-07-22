@@ -9,8 +9,8 @@ demo#:#Demo
 demo_info#:#Nach dem Speichern sehen Sie hier das Ergebnis als Demo mit ihren Daten.
 placeholder#:#Platzhalter
 placeholder_advice#:#Klicken Sie auf Platzhalter, um sie in die Vorlage einzufügen.<br>Mit :Zahl (bsp. [firstname:3]) wird das Ergebniss um diesen Wert gekürzt.
-string_to_lower#:#Alles klein
-camel_case#:#camelCase
+string_to_lower#:#Alles Klein
+camel_case#:#CamelCase
 context#:#Kontext
 number#:#Laufende Nummer
 hash#:#Zufalls Zeichenkette
@@ -19,3 +19,6 @@ placeholder_udf#:#Benutzerdefinierte Felder
 context_registration#:#Registration
 context_administration#:#Administration
 context_ldap#:#LDAP Authentifizierung
+camel_case_info#:#Entfernt alle Leerzeichen und schreibt jedes Wort hinter einem Leerzeichen groß. (bsp. "hallo welt" wird zu "HalloWelt")
+string_to_lower_info#:#Alle Großbuchstaben werden in Kleinbuchstaben umgewandelt.
+template_info#:#Erlaubte Zeichen: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Unerlaubte Zeichen werden automatisch entfernt und Ergebnisse unter 3 Zeichen ersetzt durch "invalid_login".<br />Wenn das Ergebnis schon als Benutzername existiert, wird eine eine Nummer angefügt.

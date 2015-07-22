@@ -126,6 +126,8 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 
 			$template = str_replace($expression,$replacement, $template);
 		}
+		//validate to login
+		$template = $this->validateLogin($template);
 		$ret = $template;
 
 		$count = 1;
@@ -189,14 +191,12 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 */
 	public function camelCase($string)
 	{
-		$fragments = explode(' ', $string);
-
-		foreach((array)$fragments as $key => $fragment)
+		if(strpos($string, ' ') !== false)
 		{
-			$fragments[$key] = ucfirst($fragment);
+			return $string = str_replace(' ', '', ucwords($string));
 		}
 
-		return implode('', $fragments);
+		return $string;
 	}
 
 	/**
@@ -224,14 +224,14 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 
 		if($a_umlauts)
 		{
-			$a_string = iconv("utf-8","ascii//TRANSLIT",$a_string);
+			$a_string = iconv("utf-8","ASCII//TRANSLIT",$a_string);
 		}
 
 		return $a_string;
 	}
 
 	/**
-	 * @return lfAutoGenerateUsernameConfig
+	 * @return ilAutoGenerateUsernameConfig
 	 */
 	protected function getSettings()
 	{
@@ -242,5 +242,26 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		}
 
 		return $this->settings;
+	}
+
+	protected function validateLogin($a_login)
+	{
+		$login = str_split($a_login);
+		$search = '^[A-Za-z0-9_\.\+\*\@!\$\%\~\-]+$';
+		$a_login = "";
+
+		foreach($login as $char)
+		{
+			if(ereg($search, $char))
+			{
+				$a_login .= $char;
+			}
+		}
+
+		if(empty($a_login) || strlen($a_login) < 3)
+		{
+			return 'invalid_login';
+		}
+		return $a_login;
 	}
 }

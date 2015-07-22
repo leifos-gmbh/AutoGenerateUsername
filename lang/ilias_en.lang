@@ -10,7 +10,7 @@ demo_info#:#After
 placeholder#:#Placeholder
 placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :number (e.g. [firstname:3]) the value of the placeholder will be cut to this number.
 string_to_lower#:#Lowercased
-camel_case#:#camelCase
+camel_case#:#CamelCase
 context#:#Context
 number#:#Serial Number
 hash#:#Random String
@@ -19,3 +19,6 @@ placeholder_udf#:#Custom Fields
 context_registration#:#Registration
 context_administration#:#Administration
 context_ldap#:#LDAP Authentication
+camel_case_info#:#Removes all cases and capitalize the first letter of all words (e.g "hello world" will be "HelloWorld")
+string_to_lower_info#:#All alphabetic uppercase characters will be converted to lowercase.
+template_info#:#Allowed characters: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Invalid Caracters will be removed automatically and results under 3 characters replaced by "invalid_login".<br />A Number will be attached ff the result is not unique.
