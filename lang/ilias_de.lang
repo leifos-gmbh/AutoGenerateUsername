@@ -21,4 +21,4 @@ context_administration#:#Administration
 context_ldap#:#LDAP Authentifizierung
 camel_case_info#:#Entfernt alle Leerzeichen und schreibt jedes Wort hinter einem Leerzeichen groß. (bsp. "hallo welt" wird zu "HalloWelt")
 string_to_lower_info#:#Alle Großbuchstaben werden in Kleinbuchstaben umgewandelt.
-template_info#:#Erlaubte Zeichen: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Unerlaubte Zeichen werden automatisch entfernt und Ergebnisse unter 3 Zeichen ersetzt durch "invalid_login".<br />Wenn das Ergebnis schon als Benutzername existiert, wird eine eine Nummer angefügt.
+template_info#:#Erlaubte Zeichen: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Unerlaubte Zeichen werden automatisch entfernt und Ergebnisse unter 3 Zeichen ersetzt durch "invalid_login".<br />Wenn das Ergebnis schon als Benutzername existiert, wird eine Nummer angefügt.
