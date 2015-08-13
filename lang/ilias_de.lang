@@ -9,7 +9,7 @@ demo#:#Demo
 demo_info#:#Nach dem Speichern sehen Sie hier das Ergebnis als Demo mit ihren Daten.
 placeholder#:#Platzhalter
 placeholder_advice#:#Klicken Sie auf Platzhalter, um sie in die Vorlage einzufügen.<br>Mit :Zahl (bsp. [firstname:3]) wird das Ergebniss um diesen Wert gekürzt.
-string_to_lower#:#Alles Klein
+string_to_lower#:#Alles klein
 camel_case#:#CamelCase
 context#:#Kontext
 number#:#Laufende Nummer
