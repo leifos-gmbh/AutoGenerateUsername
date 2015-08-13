@@ -15,3 +15,7 @@
 7. Hit the "Action" button and select "Refresh Languages" to update the language-files.
 
 8. Now, you can visit the username configuration at "Action" and "Configure"
+
+******************************************************************************
+**Warning:** Please test this Plugin carefully if you use ILIAS-Version 5.0.4
+******************************************************************************
