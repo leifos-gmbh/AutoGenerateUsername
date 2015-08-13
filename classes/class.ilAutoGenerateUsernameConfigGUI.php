@@ -106,14 +106,14 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$sec = new ilFormSectionHeaderGUI();
 		$sec->setTitle($pl->txt("context"));
 		//TODO: Add wehen context is ready
-		//$form->addItem($sec);
+		$form->addItem($sec);
 
 		foreach($this->getContextArray() as $key => $name)
 		{
 			$context = new ilCheckboxInputGUI($name, 'xagu_'.$key);
-			$context->setChecked($this->config->isValidContext($key));
+			$context->setChecked(in_array($key, $this->config->getAllowedContexts()));
 			//TODO: Add wehen context is ready
-			//$form->addItem($context);
+			$form->addItem($context);
 		}
 
 		$form->setTitle($pl->txt("configuration"));
@@ -150,12 +150,12 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 			foreach($this->getContextArray() as $key => $value)
 			{
 				//TODO: Add wehen context is ready
-				/*
-				if($_POST["agu_".$key])
+				if($_POST["xagu_".$key])
 				{
 					$contexts[] = $key;
-				}*/
+				}
 			}
+
 			$this->config->setAllowedContexts($contexts);
 
 			$this->config->update();
@@ -215,12 +215,12 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 	public function getContextArray()
 	{
+		include_once('Services\User\classes\class.ilUserCreationContext.php');
 		$pl = $this->getPluginObject();
 
 		return array(
-			"registration" => $pl->txt("context_registration"),
-			"administration" => $pl->txt("context_administration"),
-			"ldap" => $pl->txt("context_ldap")
+			ilUserCreationContext::CONTEXT_REGISTRATION => $pl->txt("context_registration"),
+			ilUserCreationContext::CONTEXT_LDAP => $pl->txt("context_ldap")
 		);
 	}
 }

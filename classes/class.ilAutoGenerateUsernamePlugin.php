@@ -30,9 +30,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 				switch($a_event)
 				{
 					case 'afterCreate':
+						include_once('Services\User\classes\class.ilUserCreationContext.php');
+
+						$context = ilUserCreationContext::getInstance();
+
 						//TODO: Add if wehen context is ready
-						//if((isset($a_params['context']) && $this->getSettings()->isValidContext($a_params['context']))
-						//{
+						if($this->getSettings()->isValidContext($context->getCurrentContexts()))
+						{
 							/**
 							 * @var ilObjUser $user_obj
 							 */
@@ -42,7 +46,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 							{
 								$user_obj->updateLogin($this->generateUsername($user_obj));
 							}
-						//}
+						}
 					break;
 				}
 			break;
@@ -131,7 +135,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		$ret = $template;
 
 		$count = 1;
-		while(ilObjUser::_loginExists($ret))
+		while(ilObjUser::_loginExists($ret) && $ret != $a_usr->getLogin())
 		{
 			$ret = $template . '_' . $count;
 			$count = $count+1;
