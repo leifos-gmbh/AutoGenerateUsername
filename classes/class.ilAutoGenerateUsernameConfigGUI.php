@@ -215,7 +215,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 	public function getContextArray()
 	{
-		include_once('Services\User\classes\class.ilUserCreationContext.php');
+		include_once './Services/User/classes/class.ilUserCreationContext.php';
 		$pl = $this->getPluginObject();
 
 		return array(
