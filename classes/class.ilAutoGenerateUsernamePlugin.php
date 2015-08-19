@@ -74,15 +74,24 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			$end = strpos($template, ']');
 			$expression = substr($template, $start, $end-$start+1);
 			$length = 0;
+			$add = 0;
 			$replacement = "";
 
 			if(strpos($expression, ":"))
 			{
-				$length = substr($expression,
+				$length = (int) substr($expression,
 					strpos($expression, ":")+1 ,
 					strpos($expression, ']')-strpos($expression, ":")-1);
 
 				$var = substr($expression, 1,strpos($expression, ':')-1);
+			}
+			elseif(strpos($expression, "+"))
+			{
+				$add = (int) substr($expression,
+					strpos($expression, "+")+1 ,
+					strpos($expression, ']')-strpos($expression, "+")-1);
+
+				$var = substr($expression, 1,strpos($expression, '+')-1);
 			}
 			else
 			{
@@ -120,6 +129,11 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			elseif($length > 0 && $var != "number")
 			{
 				$replacement = substr($replacement, 0, $length);
+			}
+
+			if($var == "number" && $add > 0 )
+			{
+				$replacement = $replacement+$add;
 			}
 
 			$replacement = $this->validateString(
