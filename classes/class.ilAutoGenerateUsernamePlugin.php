@@ -30,7 +30,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 				switch($a_event)
 				{
 					case 'afterCreate':
-						include_once('./Service/User/classes/class.ilUserCreationContext.php');
+						include_once('./Services/User/classes/class.ilUserCreationContext.php');
 
 						$context = ilUserCreationContext::getInstance();
 
