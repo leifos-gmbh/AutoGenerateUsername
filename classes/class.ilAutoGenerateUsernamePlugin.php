@@ -146,16 +146,12 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		}
 		//validate to login
 		$template = $this->validateLogin($template);
-		$ret = $template;
 
-		$count = 1;
-		while(ilObjUser::_loginExists($ret) && $ret != $a_usr->getLogin())
-		{
-			$ret = $template . '_' . $count;
-			$count = $count+1;
-		}
+		include_once('Services/Authentication/classes/class.ilAuthUtils.php');
+		$template = ilAuthUtils::_generateLogin($template);
 
-		return $ret;
+
+		return $template;
 	}
 
 	protected function getMap($a_user)
