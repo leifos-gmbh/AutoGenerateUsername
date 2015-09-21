@@ -3,6 +3,7 @@
 
 require_once 'Services/EventHandling/classes/class.ilEventHookPlugin.php';
 require_once 'Services/Component/classes/class.ilPluginAdmin.php';
+include_once 'Services/Utilities/classes/class.ilStr.php';
 
 /**
  * @author Fabian Wolf <wolf@leifos.com>
@@ -68,34 +69,34 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		$map = $this->getMap($a_usr);
 
 
-		while(strpos($template, '[') !== false && strpos($template, ']') !== false)
+		while(ilStr::strPos($template, '[') !== false && ilStr::strPos($template, ']') !== false)
 		{
-			$start = strpos($template, '[');
-			$end = strpos($template, ']');
-			$expression = substr($template, $start, $end-$start+1);
+			$start = ilStr::strPos($template, '[');
+			$end = ilStr::strPos($template, ']');
+			$expression = ilStr::substr($template, $start, $end-$start+1);
 			$length = 0;
 			$add = 0;
 			$replacement = "";
 
-			if(strpos($expression, ":"))
+			if(ilStr::strPos($expression, ":"))
 			{
-				$length = (int) substr($expression,
-					strpos($expression, ":")+1 ,
-					strpos($expression, ']')-strpos($expression, ":")-1);
+				$length = (int) ilStr::substr($expression,
+				    ilStr::strPos($expression, ":")+1 ,
+				    ilStr::strPos($expression, ']')-ilStr::strPos($expression, ":")-1);
 
-				$var = substr($expression, 1,strpos($expression, ':')-1);
+				$var = ilStr::substr($expression, 1,ilStr::strPos($expression, ':')-1);
 			}
-			elseif(strpos($expression, "+"))
+			elseif(ilStr::strPos($expression, "+"))
 			{
-				$add = (int) substr($expression,
-					strpos($expression, "+")+1 ,
-					strpos($expression, ']')-strpos($expression, "+")-1);
+				$add = (int) ilStr::substr($expression,
+				   ilStr::strPos($expression, "+")+1 ,
+				   ilStr::strPos($expression, ']')-ilStr::strPos($expression, "+")-1);
 
-				$var = substr($expression, 1,strpos($expression, '+')-1);
+				$var = ilStr::substr($expression, 1,ilStr::strPos($expression, '+')-1);
 			}
 			else
 			{
-				$var = substr($expression, 1,strpos($expression, ']')-1);
+				$var = ilStr::substr($expression, 1,ilStr::strPos($expression, ']')-1);
 			}
 
 			if($var == "number")
@@ -116,7 +117,8 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			}
 			elseif(in_array($var, array_keys($map)))
 			{
-				$replacement = $map[$var];
+				//adding case to make sure that every replacement is handled as word in CamelCase function
+				$replacement = " ".$map[$var];
 			}
 
 			if($length > 0 && $var == "number")
@@ -128,7 +130,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			}
 			elseif($length > 0 && $var != "number")
 			{
-				$replacement = substr($replacement, 0, $length);
+				$replacement = ilStr::substr($replacement, 0, $length);
 			}
 
 			if($var == "number" && $add > 0 )
@@ -205,12 +207,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 */
 	public function camelCase($string)
 	{
-		if(strpos($string, ' ') !== false)
-		{
-			return $string = str_replace(' ', '', ucwords($string));
-		}
-
-		return $string;
+		return $string = str_replace(' ', '', ucwords($string));
 	}
 
 	/**
@@ -222,9 +219,14 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 */
 	public function validateString($a_string, $a_str_to_lower = false, $a_camel_case = false ,$a_umlauts = false)
 	{
-		if($a_str_to_lower)
+		if($a_umlauts)
 		{
-			$a_string = strtolower($a_string);
+			$a_string = iconv("utf-8","ASCII//TRANSLIT",$a_string);
+		}
+
+		if($a_str_to_lower || $a_camel_case)
+		{
+			$a_string = ilStr::strToLower($a_string);
 		}
 
 		if($a_camel_case)
@@ -234,11 +236,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		else
 		{
 			$a_string = str_replace(' ', '', $a_string);
-		}
-
-		if($a_umlauts)
-		{
-			$a_string = iconv("utf-8","ASCII//TRANSLIT",$a_string);
 		}
 
 		return $a_string;
@@ -272,7 +269,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			}
 		}
 
-		if(empty($a_login) || strlen($a_login) < 3)
+		if(empty($a_login) || ilStr::strLen($a_login) < 3)
 		{
 			return 'invalid_login';
 		}
