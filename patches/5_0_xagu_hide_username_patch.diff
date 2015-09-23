@@ -1,0 +1,57 @@
+diff --git a/Services/Registration/classes/class.ilAccountRegistrationGUI.php b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+index a07d1e0..25836a6 100644
+--- a/Services/Registration/classes/class.ilAccountRegistrationGUI.php
++++ b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+@@ -407,26 +407,28 @@ class ilAccountRegistrationGUI
+ 			$form_valid = false;
+ 		}			
+ 
++		//BEGIN Patch hide username in registration forms
+ 		// validate username
+-		$login_obj = $this->form->getItemByPostVar('username');
+-		$login = $this->form->getInput("username");
++		//$login_obj = $this->form->getItemByPostVar('username');
++		$login = "registration_".time();
+ 		if (!ilUtil::isLogin($login))
+ 		{
+-			$login_obj->setAlert($lng->txt("login_invalid"));
++			//$login_obj->setAlert($lng->txt("login_invalid"));
+ 			$form_valid = false;
+ 		}
+ 		else if (ilObjUser::_loginExists($login))
+ 		{
+-			$login_obj->setAlert($lng->txt("login_exists"));
++			//$login_obj->setAlert($lng->txt("login_exists"));
+ 			$form_valid = false;
+ 		}
+ 		else if ((int)$ilSetting->get('allow_change_loginname') &&
+ 			(int)$ilSetting->get('reuse_of_loginnames') == 0 &&
+ 			ilObjUser::_doesLoginnameExistInHistory($login))
+ 		{
+-			$login_obj->setAlert($lng->txt('login_exists'));
++			//$login_obj->setAlert($lng->txt('login_exists'));
+ 			$form_valid = false;
+ 		}
++		//END Patch
+ 
+ 		if(!$form_valid)
+ 		{
+diff --git a/Services/User/classes/class.ilUserProfile.php b/Services/User/classes/class.ilUserProfile.php
+index 0f596c0..27f0976 100755
+--- a/Services/User/classes/class.ilUserProfile.php
++++ b/Services/User/classes/class.ilUserProfile.php
+@@ -490,7 +490,13 @@ class ilUserProfile
+ 							$val->setValue($a_user->getLogin());
+ 						}
+ 					}
+-					$a_form->addItem($val);
++					//BEGIN Patch hide username in registration forms
++					if(!self::$mode == self::MODE_REGISTRATION)
++					{
++						$a_form->addItem($val);
++					}
++					//$a_form->addItem($val);
++					//END Patch
+ 					break;
+ 				
+ 				case "text":
