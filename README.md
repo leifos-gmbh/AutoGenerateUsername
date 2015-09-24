@@ -28,7 +28,7 @@
 
 ## Patch Installation
 
-For a good experience you can apply a patch to get rid of the username field on the registration screen. This is usefull because the username wich is set by the user on the registration screen will be overwritten by this plugin. This can be confusing if the user wants to log in with his choosen username and doesn't use the one provided by this plugin via new account mail.
+For a good experience you can apply a patch to get rid of the username field on the registration screen. This is useful because the username which is set by the user on the registration screen will be overwritten by this plugin. This can be confusing if the user wants to log in with his chosen username and doesn't use the one provided by this plugin via new account mail.
 Make sure you checked "Registration" on the username configuration context or new created users will have no username.
 Run this on your commandline top apply this patch:
 
