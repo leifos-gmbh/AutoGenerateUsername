@@ -6,9 +6,9 @@
 configuration#:#Configuration
 template#:#Template
 demo#:#Demo
-demo_info#:#After
+demo_info#:#You will see a demonstration of the result with your data after saving.
 placeholder#:#Placeholder
-placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :numbewr (e.g. [firstname:3]) the value of the placeholder will be cut to this number. <br />With [number:value] 0 will be prepend (e.g. [number:3] will be 007 or [number:4] will be 0042) and with [number+value] the start value will be set to value.
+placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :numbewr (e.g. [firstname:3]) the value of the placeholder will be cut to this number. <br />With [number:value] 0 will be prepend (e.g. [number:7] will be 007 or [number:4] will be 0042) and with [number+value] the start value will be set to value.
 string_to_lower#:#Lowercased
 camel_case#:#CamelCase
 context#:#Context
