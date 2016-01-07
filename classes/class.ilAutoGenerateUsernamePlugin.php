@@ -275,4 +275,14 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		}
 		return $a_login;
 	}
+
+	/**
+	 * uninstall plugin data
+	 */
+	protected function afterUninstall()
+	{
+		$settings = new ilSetting("xagu");
+
+		$settings->deleteAll();
+	}
 }
