@@ -288,7 +288,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 */
 	protected function alphanumeric($a_string, $a_replace = '')
 	{
-		return preg_replace("/[^a-zA-Z0-9]+/", $a_replace, $this->umlauts($a_string));
+		return preg_replace('/[_\.\+\*\@!\$\%\~\-]+/', $a_replace, $a_string);
 	}
 
 	/**
