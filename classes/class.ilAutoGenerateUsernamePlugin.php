@@ -23,6 +23,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return "AutoGenerateUsername";
 	}
 
+	/**
+	 * @param string $a_component
+	 * @param string $a_event
+	 * @param array $a_params
+	 * @return bool
+	 * @throws ilUserException
+	 */
 	public function handleEvent($a_component, $a_event, $a_params)
 	{
 		switch($a_component)
@@ -156,6 +163,10 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $template;
 	}
 
+	/**
+	 * @param ilObjUser $a_user
+	 * @return string[]
+	 */
 	protected function getMap($a_user)
 	{
 		return array_merge($this->getUserMap($a_user), $this->getUDFMap($a_user));
@@ -164,22 +175,22 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	/**
 	 * @param ilObjUser $a_user
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	protected function getUserMap($a_user)
 	{
 		return array(
 			"login" => $a_user->getLogin(),
-			"firstname" => $a_user->getFirstname(),
-			"lastname" => $a_user->getLastname(),
+			"firstname" => $this->alphanumeric($a_user->getFirstname(), ' '),
+			"lastname" => $this->alphanumeric($a_user->getLastname(), ' '),
 			"email" => $a_user->getEmail(),
 			"matriculation" => $a_user->getMatriculation()
 		);
 	}
 
 	/**
-	 * @param ilObjUser$a_user
-	 * @return array
+	 * @param ilObjUser $a_user
+	 * @return string[]
 	 */
 	protected function getUDFMap($a_user)
 	{
@@ -205,9 +216,9 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 * @param string $string
 	 * @return string
 	 */
-	public function camelCase($string)
+	public function camelCase($a_string)
 	{
-		return $string = str_replace(' ', '', ucwords($string));
+		return $string = str_replace(' ', '', ucwords($a_string));
 	}
 
 	/**
@@ -221,7 +232,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	{
 		if($a_umlauts)
 		{
-			$a_string = iconv("utf-8","ASCII//TRANSLIT",$a_string);
+			$a_string = $this->umlauts($a_string);
 		}
 
 		if($a_str_to_lower || $a_camel_case)
@@ -255,19 +266,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $this->settings;
 	}
 
+	/**
+	 * @param string $a_login
+	 * @return string
+	 */
 	protected function validateLogin($a_login)
 	{
-		$login = str_split($a_login);
-		$search = '^[A-Za-z0-9_\.\+\*\@!\$\%\~\-]+$';
-		$a_login = "";
-
-		foreach($login as $char)
-		{
-			if(ereg($search, $char))
-			{
-				$a_login .= $char;
-			}
-		}
+		$a_login = preg_replace('/[^A-Za-z0-9_\.\+\*\@!\$\%\~\-]+/', '', $a_login);
 
 		if(empty($a_login) || ilStr::strLen($a_login) < 3)
 		{
@@ -284,5 +289,24 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		$settings = new ilSetting("xagu");
 
 		$settings->deleteAll();
+	}
+
+	/**
+	 * @param string $a_string
+	 * @param string $a_replace
+	 * @return string
+	 */
+	protected function alphanumeric($a_string, $a_replace = '')
+	{
+		return preg_replace("/[^a-zA-Z0-9]+/", $a_replace, $this->umlauts($a_string));
+	}
+
+	/**
+	 * @param string $a_string
+	 * @return string
+	 */
+	protected function umlauts($a_string)
+	{
+		return iconv("utf-8","ASCII//TRANSLIT",$a_string);
 	}
 }
