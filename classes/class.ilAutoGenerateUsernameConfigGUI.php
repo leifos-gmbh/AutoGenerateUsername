@@ -160,7 +160,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 			$this->config->update();
 
-			ilUtil::sendSuccess($pl->txt("configuration_saved"), true);
+			ilUtil::sendSuccess($lng->txt("saved_successfully"), true);
 			$ilCtrl->redirect($this, "configure");
 		}
 		else

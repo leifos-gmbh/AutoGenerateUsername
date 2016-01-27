@@ -8,7 +8,7 @@ template#:#Template
 demo#:#Demo
 demo_info#:#You will see a demonstration of the result with your data after saving.
 placeholder#:#Placeholder
-placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :numbewr (e.g. [firstname:3]) the value of the placeholder will be cut to this number. <br />With [number:value] 0 will be prepend (e.g. [number:7] will be 007 or [number:4] will be 0042) and with [number+value] the start value will be set to value.
+placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :number (e.g. [firstname:3]) the value of the placeholder will be cut to this number. <br />With [number:value] zeros will be prepended (e.g. [number:3] will make 007 or [number:4] will make 0042) and with [number+value] the start value will be set to value.
 string_to_lower#:#Lowercased
 camel_case#:#CamelCase
 context#:#Context
@@ -21,4 +21,4 @@ context_administration#:#Administration
 context_ldap#:#LDAP Authentication
 camel_case_info#:#Removes all cases and capitalize the first letter of all words (e.g "hello world" will be "HelloWorld")
 string_to_lower_info#:#All alphabetic uppercase characters will be converted to lowercase.
-template_info#:#Allowed characters: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Invalid Caracters will be removed automatically and results under 3 characters replaced by "invalid_login".<br />A Number will be attached ff the result is not unique.
+template_info#:#Allowed characters: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Invalid Caracters will be removed automatically and results under 3 characters replaced by "invalid_login".<br />A Number will be attached if the result is not unique.
