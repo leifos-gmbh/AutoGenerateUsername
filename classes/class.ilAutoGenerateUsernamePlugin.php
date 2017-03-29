@@ -32,6 +32,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 */
 	public function handleEvent($a_component, $a_event, $a_params)
 	{
+		ilLoggerFactory::getLogger('usr')->debug('Handling event from ' . $a_component .' ' . $a_event);
 		switch($a_component)
 		{
 			case 'Services/User':
