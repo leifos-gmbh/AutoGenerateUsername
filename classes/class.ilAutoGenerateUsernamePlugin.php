@@ -35,6 +35,22 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		ilLoggerFactory::getLogger('usr')->debug('Handling event from ' . $a_component .' ' . $a_event);
 		switch($a_component)
 		{
+			case 'Services/Authentication':
+				switch($a_event)
+				{
+					case 'afterLogin':
+						$user_login= $a_params['username'];
+						//ilLoggerFactory::getRootLogger()->debug(" username = ".$user_login);
+						$user = ilObjUser::_lookupId($user_login);
+						$user_auth_method = $user->getAuthMode();
+
+						if($this->getSettings()->getActiveUpdateExistingUsers() && $this->getSettings()->getAuthModeUpdate() == $user_auth_method)
+						{
+							$user->updateLogin($this->generateUsername($user));
+						}
+						break;
+				}
+				break;
 			case 'Services/User':
 				switch($a_event)
 				{

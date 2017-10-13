@@ -38,6 +38,16 @@ class ilAutoGenerateUsernameConfig
 	 */
 	protected $string_to_lower = true;
 
+	/**
+	 * @var bool
+	 */
+	protected $active_update = false;
+
+	/**
+	 * @var string
+	 */
+	protected $auth_mode_update;
+
 	public function __construct()
 	{
 		$this->setting = new ilSetting("xagu");
@@ -53,6 +63,8 @@ class ilAutoGenerateUsernameConfig
 		$this->setLoginTemplate($this->setting->get("xagu_template", $this->getLoginTemplate()));
 		$this->setUseCamelCase((bool)$this->setting->get("xagu_use_camel_case", $this->getUseCamelCase()));
 		$this->setStringToLower((bool)$this->setting->get("xagu_string_to_lower", $this->getStringToLower()));
+		$this->setActiveUpdateExistingUsers((bool)$this->setting->get("xagu_active_update", $this->getActiveUpdateExistingUsers()));
+		$this->setAuthModeUpdate($this->setting->get('xagu_auth_mode', $this->getAuthModeUpdate()));
 	}
 
 	public function update()
@@ -62,6 +74,8 @@ class ilAutoGenerateUsernameConfig
 		$this->setting->set("xagu_template", $this->getLoginTemplate());
 		$this->setting->set("xagu_use_camel_case", (int) $this->getUseCamelCase());
 		$this->setting->set("xagu_string_to_lower", (int) $this->getStringToLower());
+		$this->setting->set("xagu_active_update", (int) $this->getActiveUpdateExistingUsers());
+		$this->setting->set("xagu_auth_mode", $this->getAuthModeUpdate());
 	}
 
 	/**
@@ -144,6 +158,35 @@ class ilAutoGenerateUsernameConfig
 		return $this->use_camelCase;
 	}
 
+	/**
+	 * @param $active_update
+	 */
+	public function setActiveUpdateExistingUsers($active_update)
+	{
+		$this->active_update = $active_update;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function getActiveUpdateExistingUsers()
+	{
+		return $this->active_update;
+	}
+
+	public function setAuthModeUpdate($mode)
+	{
+		$this->auth_mode_update = $mode;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getAuthModeUpdate()
+	{
+		return $this->auth_mode_update;
+	}
+
 
 
 	public function getNextId()
@@ -169,5 +212,27 @@ class ilAutoGenerateUsernameConfig
 
 		return false;
 	}
+
+	public function getStringActiveAuthModes()
+	{
+		global $DIC;
+
+		$lng = $DIC->language();
+
+		$modes = array();
+		foreach (ilAuthUtils::_getActiveAuthModes() as $mode_name => $mode)
+		{
+			if(ilLDAPServer::isAuthModeLDAP($mode))
+			{
+				$server = ilLDAPServer::getInstanceByServerId(ilLDAPServer::getServerIdByAuthMode($mode));
+				$name = $server->getName();
+				$modes[$mode_name] = $name;
+			}
+			else
+			{
+				$modes[$mode_name] = $lng->txt("auth_" . $mode_name);
+			}
+		}
+		return $modes;
+	}
 }
-?>

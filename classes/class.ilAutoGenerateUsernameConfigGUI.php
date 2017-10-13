@@ -103,6 +103,24 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$camelCase->setChecked($this->config->getUseCamelCase());
 		$form->addItem($camelCase);
 
+		//new update
+		$section_update_existing = new ilFormSectionHeaderGUI();
+		$section_update_existing->setTitle($pl->txt("update_exising"));
+		$form->addItem($section_update_existing);
+
+		//activate update existing users
+		$active_update_existing = new ilCheckboxInputGUI($pl->txt("active_update"), "xagu_active_update");
+		$active_update_existing->setChecked($this->config->getActiveUpdateExistingUsers());
+		$form->addItem($active_update_existing);
+
+		//select auth active modes
+		$select_active_modes = new ilSelectInputGUI($pl->txt("select_auth_modes"), "xagu_auth_mode");
+		$select_active_modes->setRequired(TRUE);
+		$select_active_modes->setOptions($this->config->getStringActiveAuthModes());
+		$select_active_modes->setValue($this->config->getAuthModeUpdate());
+		$form->addItem($select_active_modes);
+
+
 		$sec = new ilFormSectionHeaderGUI();
 		$sec->setTitle($pl->txt("context"));
 		//TODO: Add wehen context is ready
@@ -140,11 +158,15 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 				$_POST['xagu_template'],
 				(bool)$_POST["xagu_string_to_lower"],
 				(bool)$_POST["xagu_camel_case"],
+				//(bool)$_POST["xagu_active_update"],
 				true);
 
 			$this->config->setLoginTemplate($template);
 			$this->config->setStringToLower((bool)$_POST["xagu_string_to_lower"]);
 			$this->config->setUseCamelCase((bool)$_POST["xagu_camel_case"]);
+			$this->config->setActiveUpdateExistingUsers((bool)$_POST["xagu_active_update"]);
+			$this->config->setAuthModeUpdate($_POST["xagu_auth_mode"]);
+
 			$contexts = array();
 
 			foreach($this->getContextArray() as $key => $value)
