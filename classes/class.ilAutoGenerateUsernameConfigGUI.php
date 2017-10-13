@@ -158,7 +158,6 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 				$_POST['xagu_template'],
 				(bool)$_POST["xagu_string_to_lower"],
 				(bool)$_POST["xagu_camel_case"],
-				//(bool)$_POST["xagu_active_update"],
 				true);
 
 			$this->config->setLoginTemplate($template);

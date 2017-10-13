@@ -41,7 +41,8 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 					case 'afterLogin':
 						$user_login= $a_params['username'];
 						//ilLoggerFactory::getRootLogger()->debug(" username = ".$user_login);
-						$user = ilObjUser::_lookupId($user_login);
+						$user_id = ilObjUser::_lookupId($user_login);
+						$user = new ilObjUser($user_id);
 						$user_auth_method = $user->getAuthMode();
 
 						if($this->getSettings()->getActiveUpdateExistingUsers() && $this->getSettings()->getAuthModeUpdate() == $user_auth_method)

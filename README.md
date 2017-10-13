@@ -47,3 +47,7 @@ To remove this patch run :
 
 	cd <ILIAS_directory>
 	patch -R -p0 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/5_0xxagu_hide_username_patch.diff
+
+### New in plugin version "5.3.1"
+
+- New option to auto generate names for the current ILIAS users. When the user update his own profile the plugin will update the "login" name.
