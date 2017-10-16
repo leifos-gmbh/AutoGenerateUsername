@@ -177,11 +177,42 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		$template = $this->validateLogin($template);
 
 		include_once('Services/Authentication/classes/class.ilAuthUtils.php');
-		$template = ilAuthUtils::_generateLogin($template);
-
+		$template = self::_generateLogin($template, $a_usr->getId());
 
 		return $template;
 	}
+	
+   /**
+	* generate free login by starting with a default string and adding
+	* postfix numbers
+	*/
+	public static function _generateLogin($a_login, $a_usr_id)
+	{
+		global $ilDB;
+		
+		// Check if username already exists
+		$found = false;
+		$postfix = 0;
+		$c_login = $a_login;
+		while(!$found)
+		{
+			$r = $ilDB->query("SELECT login FROM usr_data WHERE login = ".
+				$ilDB->quote($c_login).' '.
+				'AND usr_id != '.$ilDB->quote($a_usr_id,'text'));
+			if ($r->numRows() > 0)
+			{
+				$postfix++;
+				$c_login = $a_login.$postfix;
+			}
+			else
+			{
+				$found = true;
+			}
+		}
+		
+		return $c_login;
+	}
+
 
 	/**
 	 * @param ilObjUser $a_user
