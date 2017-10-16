@@ -47,8 +47,9 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 
 						if($this->getSettings()->getActiveUpdateExistingUsers() && $this->getSettings()->getAuthModeUpdate() == $user_auth_method)
 						{
-							$user->setLogin($this->generateUsername($user));
-							$user->update();
+							$query = 'update usr_data set login = '. $GLOBALS['DIC']->database()->quote($this->generateUsername($user), 'text').' '.
+								'where usr_id = '. $GLOBALS['DIC']->database()->quote($user_id,'integer');
+							$GLOBALS['DIC']->database()->manipulate($query);
 						}
 						break;
 				}
