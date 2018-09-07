@@ -10,7 +10,7 @@ The username will be consisting of informations like firstname, lastname, email,
 5.3.999
 
 **Responsible Developer:**
-Fabian Wolf - wolf AT leifos.com
+Stefan Meyer meyer at leifos
 
 **Supported Languages:**
 German, English
