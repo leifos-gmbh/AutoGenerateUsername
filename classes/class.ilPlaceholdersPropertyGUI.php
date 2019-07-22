@@ -1,35 +1,47 @@
 <?php
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-/** 
-* 
-* @author Jan Posselt <jposselt@databay.de>
-* @version $Id$
-* 
-* 
-* @ingroup ServicesMail
-*/
-include_once 'Services/Form/classes/class.ilFormPropertyGUI.php';
-
+/**
+ *
+ * @author Jan Posselt <jposselt@databay.de>
+ *
+ */
 class ilPlaceholdersPropertyGUI extends ilFormPropertyGUI
 {
 
+	/**
+	 * @var array
+	 */
 	protected $item = array();
+
+	/**
+	 * @var string
+	 */
 	protected $textfield_id = "";
+
+	/**
+	 * @var
+	 */
 	protected $placeholder_advice;
+
 	/**
 	 * @var ilAutoGenerateUsernamePlugin
 	 */
 	protected $plugin;
-	
+
+	/**
+	 * ilPlaceholdersPropertyGUI constructor.
+	 */
 	public function __construct()
 	{
-		global $lng;
-
 		$this->plugin = ilPlugin::getPluginObject(IL_COMP_SERVICE, "EventHandling", "evhk", "AutoGenerateUsername");
 		parent::__construct('');
 	}
 
+	/**
+	 * @param $a_title
+	 * @param $a_text
+	 */
 	public function addPlaceholder($a_title, $a_text)
 	{
 		$this->item[] = array(
@@ -39,6 +51,9 @@ class ilPlaceholdersPropertyGUI extends ilFormPropertyGUI
 		);
 	}
 
+	/**
+	 * @param $a_title
+	 */
 	public function addSection($a_title)
 	{
 		$this->item[] = array(
@@ -79,11 +94,15 @@ class ilPlaceholdersPropertyGUI extends ilFormPropertyGUI
 		return $this->placeholder_advice;
 	}
 
-
-	
+	/**
+	 * @param ilTemplate
+	 */
 	public function insert($a_tpl)
 	{
-		global $lng, $tpl;
+		global $DIC;
+
+		$lng = $DIC->language();
+		$tpl = $DIC->ui()->mainTemplate();
 
 		$tpl->addJavaScript($this->plugin->getDirectory() . "/js/ilAutoGenerateUsername.js");
 		$subtpl = $this->plugin->getTemplate("tpl.placeholders.html");
@@ -120,6 +139,9 @@ class ilPlaceholdersPropertyGUI extends ilFormPropertyGUI
 		$a_tpl->parseCurrentBlock();	
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function setValueByArray()
 	{
 		return true;

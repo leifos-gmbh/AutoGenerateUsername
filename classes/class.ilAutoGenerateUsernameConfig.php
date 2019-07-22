@@ -4,7 +4,6 @@
  * Auto Generate Username configuration class
  *
  * @author Fabian Wolf <wolf@leifos.com>
- * @version $Id$
  *
  */
 class ilAutoGenerateUsernameConfig
@@ -14,7 +13,7 @@ class ilAutoGenerateUsernameConfig
 	 */
 	protected $setting;
 	/**
-	 * @var string
+	 * @var string[]
 	 */
 	protected $allowed_contexts = array();
 
@@ -48,13 +47,18 @@ class ilAutoGenerateUsernameConfig
 	 */
 	protected $auth_mode_update;
 
+	/**
+	 * ilAutoGenerateUsernameConfig constructor.
+	 */
 	public function __construct()
 	{
-		$this->setting = new ilSetting("xagu");
-
+		$this->setting = new \ilSetting('xagu');
 		$this->read();
 	}
 
+	/**
+	 * Read settings
+	 */
 	public function read()
 	{
 		$this->setting->read();
@@ -188,7 +192,9 @@ class ilAutoGenerateUsernameConfig
 	}
 
 
-
+	/**
+	 * @return int
+	 */
 	public function getNextId()
 	{
 		$this->setIdSequenz($this->getIdSequenz()+1);
@@ -196,6 +202,10 @@ class ilAutoGenerateUsernameConfig
 		return $this->getIdSequenz();
 	}
 
+	/**
+	 * @param $a_context
+	 * @return bool
+	 */
 	public function isValidContext($a_context)
 	{
 		include_once('./Services/User/classes/class.ilUserCreationContext.php');

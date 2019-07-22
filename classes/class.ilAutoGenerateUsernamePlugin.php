@@ -1,10 +1,6 @@
 <?php
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once 'Services/EventHandling/classes/class.ilEventHookPlugin.php';
-require_once 'Services/Component/classes/class.ilPluginAdmin.php';
-include_once 'Services/Utilities/classes/class.ilStr.php';
-
 /**
  * @author Fabian Wolf <wolf@leifos.com>
  */
@@ -61,16 +57,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 						include_once('./Services/User/classes/class.ilUserCreationContext.php');
 
 						$context = ilUserCreationContext::getInstance();
-
-						//TODO: Add if wehen context is ready
 						if($this->getSettings()->isValidContext($context->getCurrentContexts()))
 						{
 							/**
 							 * @var ilObjUser $user_obj
 							 */
 							$user_obj = $a_params['user_obj'];
-
-							if(is_object($user_obj) && strtolower(get_class($user_obj)) == "ilobjuser")
+							if($user_obj instanceof ilObjUser)
 							{
 								$user_obj->updateLogin($this->generateUsername($user_obj));
 							}
@@ -176,7 +169,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		//validate to login
 		$template = $this->validateLogin($template);
 
-		include_once('Services/Authentication/classes/class.ilAuthUtils.php');
 		$template = self::_generateLogin($template, $a_usr->getId());
 
 		return $template;
