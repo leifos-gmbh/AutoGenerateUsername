@@ -4,10 +4,10 @@ This ILIAS plugin provides an event hook to automatically create an username aft
 The username will be consisting of informations like firstname, lastname, email, a sequential number etc.
 
 **Minimum ILIAS Version:**
-5.3.0
+5.4.0
 
 **Maximum ILIAS Version:**
-5.3.999
+5.4.999
 
 **Responsible Developer:**
 Stefan Meyer meyer at leifos
