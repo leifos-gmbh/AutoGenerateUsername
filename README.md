@@ -41,12 +41,12 @@ Make sure you checked "Registration" on the username configuration context or ne
 Run this on your commandline top apply this patch:
 
 	cd <ILIAS_directory>
-	patch -p0 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/5_x_xagu_hide_username_patch.diff
+	patch -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/5_x_xagu_hide_username_patch.diff
 
 To remove this patch run :
 
 	cd <ILIAS_directory>
-	patch -R -p0 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/5_0xxagu_hide_username_patch.diff
+	patch -R -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/5_0xxagu_hide_username_patch.diff
 
 ### New in plugin version "5.3.1"
 
