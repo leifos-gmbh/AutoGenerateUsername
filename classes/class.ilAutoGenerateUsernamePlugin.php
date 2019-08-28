@@ -137,8 +137,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			}
 			elseif(in_array($var, array_keys($map)))
 			{
-				//adding case to make sure that every replacement is handled as word in CamelCase function
-				$replacement = " ".$map[$var];
+				$replacement = $map[$var];
 			}
 
 			if($length > 0 && $var == "number")
@@ -256,12 +255,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	}
 
 	/**
-	 * @param string $string
+	 * @param string $a_string
 	 * @return string
 	 */
 	public function camelCase($a_string)
 	{
-		return $string = str_replace(' ', '', ucwords($a_string));
+		//adding case to make sure that every replacement is handled as word in CamelCase function
+		return $string = str_replace(' ', '', ucwords(" ".$a_string));
 	}
 
 	/**
