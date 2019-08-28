@@ -3,7 +3,7 @@
 include_once("./Services/Component/classes/class.ilPluginConfigGUI.php");
  
 /**
- *y Auto generate username configuration GUI class
+ * Auto generate username configuration GUI class
  *
  * @author Fabian Wolf <wolf@leifos.com>
  * @version $Id$
@@ -36,8 +36,9 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	 */
 	function configure()
 	{
-		global $tpl;
+		global $DIC;
 
+		$tpl = $DIC->ui()->mainTemplate();
 		$form = $this->initConfigurationForm();
 		$tpl->setContent($form->getHTML());
 	}
@@ -49,10 +50,14 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	 */
 	public function initConfigurationForm()
 	{
-		global $lng, $ilCtrl, $ilUser;
+		global $DIC;
+
+		$lng = $DIC->language();
+		$ilCtrl = $DIC->ctrl();
+		$ilUser = $DIC->user();
+
 		$this->initConfig();
 		$pl = $this->getPluginObject();
-		include_once("Services/Form/classes/class.ilPropertyFormGUI.php");
 		$form = new ilPropertyFormGUI();
 		$form->addCommandButton("save", $lng->txt("save"));
 
@@ -103,16 +108,32 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$camelCase->setChecked($this->config->getUseCamelCase());
 		$form->addItem($camelCase);
 
+		//new update
+		$section_update_existing = new ilFormSectionHeaderGUI();
+		$section_update_existing->setTitle($pl->txt("update_exising"));
+		$form->addItem($section_update_existing);
+
+		//activate update existing users
+		$active_update_existing = new ilCheckboxInputGUI($pl->txt("active_update"), "xagu_active_update");
+		$active_update_existing->setChecked($this->config->getActiveUpdateExistingUsers());
+		$form->addItem($active_update_existing);
+
+		//select auth active modes
+		$select_active_modes = new ilSelectInputGUI($pl->txt("select_auth_modes"), "xagu_auth_mode");
+		$select_active_modes->setRequired(TRUE);
+		$select_active_modes->setOptions($this->config->getStringActiveAuthModes());
+		$select_active_modes->setValue($this->config->getAuthModeUpdate());
+		$form->addItem($select_active_modes);
+
+
 		$sec = new ilFormSectionHeaderGUI();
 		$sec->setTitle($pl->txt("context"));
-		//TODO: Add wehen context is ready
 		$form->addItem($sec);
 
 		foreach($this->getContextArray() as $key => $name)
 		{
 			$context = new ilCheckboxInputGUI($name, 'xagu_'.$key);
 			$context->setChecked(in_array($key, $this->config->getAllowedContexts()));
-			//TODO: Add wehen context is ready
 			$form->addItem($context);
 		}
 
@@ -128,7 +149,11 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	 */
 	public function save()
 	{
-		global $tpl, $lng, $ilCtrl;
+		global $DIC;
+
+		$tpl = $DIC->ui()->mainTemplate();
+		$lng = $DIC->language();
+		$ilCtrl = $DIC->ctrl();
 
 		$this->initConfig();
 		$pl = $this->getPluginObject();
@@ -145,11 +170,13 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 			$this->config->setLoginTemplate($template);
 			$this->config->setStringToLower((bool)$_POST["xagu_string_to_lower"]);
 			$this->config->setUseCamelCase((bool)$_POST["xagu_camel_case"]);
+			$this->config->setActiveUpdateExistingUsers((bool)$_POST["xagu_active_update"]);
+			$this->config->setAuthModeUpdate($_POST["xagu_auth_mode"]);
+
 			$contexts = array();
 
 			foreach($this->getContextArray() as $key => $value)
 			{
-				//TODO: Add wehen context is ready
 				if($_POST["xagu_".$key])
 				{
 					$contexts[] = $key;
@@ -170,15 +197,25 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		}
 	}
 
+	/**
+	 * init config
+	 */
 	public function initConfig()
 	{
 		$this->getPluginObject()->includeClass("class.ilAutoGenerateUsernameConfig.php");
 
 		$this->config = new ilAutoGenerateUsernameConfig();
 	}
+
+	/**
+	 * Get standard placeholders
+	 * @return array
+	 */
 	public function getStandardPlaceholder()
 	{
-		global $lng;
+		global $DIC;
+
+		$lng = $DIC->language();
 		$pl = $this->getPluginObject();
 
 		$placeholder = array(
@@ -193,6 +230,11 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 		return $placeholder;
 	}
+
+	/**
+	 * Get udf placeholders
+	 * @return array
+	 */
 	public function getUDFPlaceholder()
 	{
 		include_once './Services/User/classes/class.ilUserDefinedFields.php';
@@ -209,13 +251,15 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 				$placeholder["udf_".$field_id] = $definition['field_name'];
 			}
 		}
-
 		return $placeholder;
 	}
 
+	/**
+	 * Get context array
+	 * @return array
+	 */
 	public function getContextArray()
 	{
-		include_once('./Services/User/classes/class.ilUserCreationContext.php');
 		$pl = $this->getPluginObject();
 
 		return array(

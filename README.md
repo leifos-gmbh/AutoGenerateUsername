@@ -4,13 +4,13 @@ This ILIAS plugin provides an event hook to automatically create an username aft
 The username will be consisting of informations like firstname, lastname, email, a sequential number etc.
 
 **Minimum ILIAS Version:**
-5.1.0
+5.4.0
 
 **Maximum ILIAS Version:**
-5.1.999
+5.4.999
 
 **Responsible Developer:**
-Fabian Wolf - wolf AT leifos.com
+Stefan Meyer meyer at leifos
 
 **Supported Languages:**
 German, English
@@ -47,3 +47,7 @@ To remove this patch run :
 
 	cd <ILIAS_directory>
 	patch -R -p0 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/5_0xxagu_hide_username_patch.diff
+
+### New in plugin version "5.3.1"
+
+- New option to auto generate names for the current ILIAS users. When the user update his own profile the plugin will update the "login" name.

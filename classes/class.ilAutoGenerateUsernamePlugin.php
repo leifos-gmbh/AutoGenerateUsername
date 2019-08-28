@@ -1,10 +1,6 @@
 <?php
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
-require_once 'Services/EventHandling/classes/class.ilEventHookPlugin.php';
-require_once 'Services/Component/classes/class.ilPluginAdmin.php';
-include_once 'Services/Utilities/classes/class.ilStr.php';
-
 /**
  * @author Fabian Wolf <wolf@leifos.com>
  */
@@ -32,8 +28,28 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 */
 	public function handleEvent($a_component, $a_event, $a_params)
 	{
+		ilLoggerFactory::getLogger('usr')->debug('Handling event from ' . $a_component .' ' . $a_event);
 		switch($a_component)
 		{
+			case 'Services/Authentication':
+				switch($a_event)
+				{
+					case 'afterLogin':
+						$user_login= $a_params['username'];
+						//ilLoggerFactory::getRootLogger()->debug(" username = ".$user_login);
+						$user_id = ilObjUser::_lookupId($user_login);
+						$user = new ilObjUser($user_id);
+						$user_auth_method = $user->getAuthMode();
+
+						if($this->getSettings()->getActiveUpdateExistingUsers() && $this->getSettings()->getAuthModeUpdate() == $user_auth_method)
+						{
+							$query = 'update usr_data set login = '. $GLOBALS['DIC']->database()->quote($this->generateUsername($user), 'text').' '.
+								'where usr_id = '. $GLOBALS['DIC']->database()->quote($user_id,'integer');
+							$GLOBALS['DIC']->database()->manipulate($query);
+						}
+						break;
+				}
+				break;
 			case 'Services/User':
 				switch($a_event)
 				{
@@ -41,16 +57,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 						include_once('./Services/User/classes/class.ilUserCreationContext.php');
 
 						$context = ilUserCreationContext::getInstance();
-
-						//TODO: Add if wehen context is ready
 						if($this->getSettings()->isValidContext($context->getCurrentContexts()))
 						{
 							/**
 							 * @var ilObjUser $user_obj
 							 */
 							$user_obj = $a_params['user_obj'];
-
-							if(is_object($user_obj) && strtolower(get_class($user_obj)) == "ilobjuser")
+							if($user_obj instanceof ilObjUser)
 							{
 								$user_obj->updateLogin($this->generateUsername($user_obj));
 							}
@@ -156,12 +169,42 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		//validate to login
 		$template = $this->validateLogin($template);
 
-		include_once('Services/Authentication/classes/class.ilAuthUtils.php');
-		$template = ilAuthUtils::_generateLogin($template);
-
+		$template = self::_generateLogin($template, $a_usr->getId());
 
 		return $template;
 	}
+	
+   /**
+	* generate free login by starting with a default string and adding
+	* postfix numbers
+	*/
+	public static function _generateLogin($a_login, $a_usr_id)
+	{
+		global $ilDB;
+		
+		// Check if username already exists
+		$found = false;
+		$postfix = 0;
+		$c_login = $a_login;
+		while(!$found)
+		{
+			$r = $ilDB->query("SELECT login FROM usr_data WHERE login = ".
+				$ilDB->quote($c_login).' '.
+				'AND usr_id != '.$ilDB->quote($a_usr_id,'text'));
+			if ($r->numRows() > 0)
+			{
+				$postfix++;
+				$c_login = $a_login.$postfix;
+			}
+			else
+			{
+				$found = true;
+			}
+		}
+		
+		return $c_login;
+	}
+
 
 	/**
 	 * @param ilObjUser $a_user
