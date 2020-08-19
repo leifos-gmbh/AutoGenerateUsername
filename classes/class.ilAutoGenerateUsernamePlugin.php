@@ -54,7 +54,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 				switch($a_event)
 				{
 					case 'afterCreate':
-						include_once('./Services/User/classes/class.ilUserCreationContext.php');
 
 						$context = ilUserCreationContext::getInstance();
 						if($this->getSettings()->isValidContext($context->getCurrentContexts()))
@@ -150,7 +149,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 			}
 			elseif($length > 0 && $var != "number")
 			{
-				$replacement = ilStr::substr($replacement, 0, $length);
+				$replacement = ilStr::substr($replacement, 1, $length);
 			}
 
 			if($var == "number" && $add > 0 )
@@ -238,7 +237,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	protected function getUDFMap($a_user)
 	{
 		$map = array();
-		include_once './Services/User/classes/class.ilUserDefinedFields.php';
 		/**
 		 * @var ilUserDefinedFields $user_defined_fields
 		 */

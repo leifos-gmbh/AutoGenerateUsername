@@ -1,10 +1,11 @@
 // inserts placeholder at current coursor position
-function insertTextIntoTextField(text, obj_id)
+function insertTextIntoTextField(text, obj_name)
 {
-    if (text && obj_id)
+    if (text && obj_name)
     {
-		var objTextField = document.getElementById(obj_id);
-		
+		var objTextField = document.getElementsByName(obj_name)[0];
+
+		console.log(objTextField);
 		if (document.selection)
 		{
         	objTextField.focus();

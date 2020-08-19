@@ -208,7 +208,6 @@ class ilAutoGenerateUsernameConfig
 	 */
 	public function isValidContext($a_context)
 	{
-		include_once('./Services/User/classes/class.ilUserCreationContext.php');
 
 		if(in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $a_context) && in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $this->getAllowedContexts()))
 		{

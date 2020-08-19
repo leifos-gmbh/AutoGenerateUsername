@@ -1,11 +1,9 @@
 <?php
 
-include_once("./Services/Component/classes/class.ilPluginConfigGUI.php");
- 
 /**
  * Auto generate username configuration GUI class
  *
- * @author Fabian Wolf <wolf@leifos.com>
+ * @author Marvin Barz <barz@leifos.com>
  * @version $Id$
  *
  */
@@ -40,107 +38,74 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 		$tpl = $DIC->ui()->mainTemplate();
 		$form = $this->initConfigurationForm();
-		$tpl->setContent($form->getHTML());
+		$tpl->setContent($DIC->ui()->renderer()->render($form));
 	}
 	
 	/**
 	 * Init configuration form.
 	 *
-	 * @return ilPropertyFormGUI form object
+	 * @return \ILIAS\UI\Component\Input\Container\Form\Standard form component
 	 */
 	public function initConfigurationForm()
 	{
 		global $DIC;
 
-		$lng = $DIC->language();
-		$ilCtrl = $DIC->ctrl();
 		$ilUser = $DIC->user();
+		$tpl = $DIC->ui()->mainTemplate();
 
 		$this->initConfig();
 		$pl = $this->getPluginObject();
-		$form = new ilPropertyFormGUI();
-		$form->addCommandButton("save", $lng->txt("save"));
+		$ui = $DIC->ui()->factory();
 
-		$template = new ilTextInputGUI($pl->txt("template"), "xagu_template");
-		$template->setInfo($pl->txt('template_info'));
-		$template->setRequired(true);
-		$template->setValue($this->config->getLoginTemplate());
-		$form->addItem($template);
+		$tpl->addJavaScript($pl->getDirectory() . "/js/ilAutoGenerateUsername.js");
 
-		$demo = new ilTextInputGUI($pl->txt("demo"), "xagu_demo");
-		$demo->setInfo($pl->txt("demo_info"));
-		$demo->setValue($pl->generateUsername($ilUser, true));
-		$demo->setDisabled(true);
-		$form->addItem($demo);
+		$placeholders = $this->createPlaceholderHTML();
 
-		$pl->includeClass("class.ilPlaceholdersPropertyGUI.php");
-		$placeholder = new ilPlaceholdersPropertyGUI();
-		$placeholder->setTitle($pl->txt("placeholder"));
-		$placeholder->setTextfieldId("xagu_template");
-		$placeholder->setPlaceholderAdvice($pl->txt("placeholder_advice"));
-
-		$placeholder->addSection($pl->txt('placeholder_standard'));
-		foreach($this->getStandardPlaceholder() as $text => $title)
-		{
-			$placeholder->addPlaceholder($title, $text);
-		}
-		$udf =$this->getUDFPlaceholder();
-
-		if(count($udf) > 0)
-		{
-			$placeholder->addSection($pl->txt('placeholder_udf'));
-			foreach($this->getUDFPlaceholder() as $text => $title)
-			{
-				$placeholder->addPlaceholder($title, $text);
-			}
-		}
+		//section configuration
+		$template = $ui->input()->field()->text($pl->txt("template"), $pl->txt('template_info') . $placeholders)
+		                                 ->withRequired(true)
+										 ->withValue($this->config->getLoginTemplate());
 
 
-		$form->addItem($placeholder);
+		$demo = $ui->input()->field()->text($pl->txt("demo"), $pl->txt('demo_info'))
+		                             ->withDisabled(true)
+									 ->withValue($pl->generateUsername($ilUser, true));
 
-		$string_to_lower = new ilCheckboxInputGUI($pl->txt("string_to_lower"), "xagu_string_to_lower");
-		$string_to_lower->setInfo($pl->txt('string_to_lower_info'));
-		$string_to_lower->setChecked($this->config->getStringToLower());
-		$form->addItem($string_to_lower);
+		$string_to_lower_choice = $ui->input()->field()->checkbox($pl->txt("string_to_lower"))->withValue($this->config->getStringToLower());
 
-		$camelCase = new ilCheckboxInputGUI($pl->txt("camel_case"), "xagu_camel_case");
-		$camelCase->setInfo($pl->txt('camel_case_info'));
-		$camelCase->setChecked($this->config->getUseCamelCase());
-		$form->addItem($camelCase);
+		$camelcase_choice = $ui->input()->field()->checkbox($pl->txt("camel_case"))->withValue($this->config->getUseCamelCase());
 
-		//new update
-		$section_update_existing = new ilFormSectionHeaderGUI();
-		$section_update_existing->setTitle($pl->txt("update_exising"));
-		$form->addItem($section_update_existing);
+		$configuration_section = $ui->input()->field()->section([$template, $demo, $string_to_lower_choice, $camelcase_choice], $pl->txt("configuration"));
 
-		//activate update existing users
-		$active_update_existing = new ilCheckboxInputGUI($pl->txt("active_update"), "xagu_active_update");
-		$active_update_existing->setChecked($this->config->getActiveUpdateExistingUsers());
-		$form->addItem($active_update_existing);
+		//section update existing
+		$active_accounts = $ui->input()->field()->checkbox($pl->txt("active_update"))->withValue($this->config->getActiveUpdateExistingUsers());
 
-		//select auth active modes
-		$select_active_modes = new ilSelectInputGUI($pl->txt("select_auth_modes"), "xagu_auth_mode");
-		$select_active_modes->setRequired(TRUE);
-		$select_active_modes->setOptions($this->config->getStringActiveAuthModes());
-		$select_active_modes->setValue($this->config->getAuthModeUpdate());
-		$form->addItem($select_active_modes);
+		$authentication_select = $ui->input()->field()->select($pl->txt("select_auth_modes"), $this->config->getStringActiveAuthModes())
+									->withRequired(true)
+									->withValue($this->config->getAuthModeUpdate());
+
+		$update_existing_section = $ui->input()->field()->section([$active_accounts, $authentication_select], $pl->txt("update_existing"));
 
 
-		$sec = new ilFormSectionHeaderGUI();
-		$sec->setTitle($pl->txt("context"));
-		$form->addItem($sec);
-
+		//context section
+		$context_sections = array();
 		foreach($this->getContextArray() as $key => $name)
 		{
-			$context = new ilCheckboxInputGUI($name, 'xagu_'.$key);
-			$context->setChecked(in_array($key, $this->config->getAllowedContexts()));
-			$form->addItem($context);
+			$context = $ui->input()->field()->checkbox($name)->withValue(in_array($key, $this->config->getAllowedContexts()));
+
+			$context_sections[$key] = $context;
 		}
 
-		$form->setTitle($pl->txt("configuration"));
-		$form->setFormAction($ilCtrl->getFormAction($this));
+		$context_section = $ui->input()->field()->section($context_sections, $pl->txt("context"));
 
-		return $form;
+		$form_action = $DIC->ctrl()->getFormActionByClass('ilAutoGenerateUsernameConfigGUI','save');
+		$form_elements = array(
+			"configuration"   => $configuration_section,
+			"update_existing" => $update_existing_section,
+			"context"         => $context_section
+		);
+
+		return $ui->input()->container()->form()->standard($form_action, $form_elements);
 	}
 	
 	/**
@@ -151,33 +116,47 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	{
 		global $DIC;
 
-		$tpl = $DIC->ui()->mainTemplate();
 		$lng = $DIC->language();
 		$ilCtrl = $DIC->ctrl();
+		$request = $DIC->http()->request();
+		$ilias   = $DIC["ilias"];
 
 		$this->initConfig();
 		$pl = $this->getPluginObject();
-		
-		$form = $this->initConfigurationForm();
-		if ($form->checkInput())
-		{
+
+
+		if ($request->getMethod() == "POST") {
+			$form   = $this->initConfigurationForm()->withRequest($request);
+			$result = $form->getData();
+
+			$DIC->logger()->usr()->dump($this->getContextArray());
+			$DIC->logger()->usr()->dump($result);
+
+			$template_string  = $result['configuration'][0];
+			$string_to_lower  = $result['configuration'][2];
+			$string_camelcase = $result['configuration'][3];
+
+			$active_update = $result['update_existing'][0];
+			$auth_mode     = $result['update_existing'][1];
+
+
 			$template = $pl->validateString(
-				$_POST['xagu_template'],
-				(bool)$_POST["xagu_string_to_lower"],
-				(bool)$_POST["xagu_camel_case"],
+				$template_string,
+				(bool)$string_to_lower,
+				(bool)$string_camelcase,
 				true);
 
 			$this->config->setLoginTemplate($template);
-			$this->config->setStringToLower((bool)$_POST["xagu_string_to_lower"]);
-			$this->config->setUseCamelCase((bool)$_POST["xagu_camel_case"]);
-			$this->config->setActiveUpdateExistingUsers((bool)$_POST["xagu_active_update"]);
-			$this->config->setAuthModeUpdate($_POST["xagu_auth_mode"]);
+			$this->config->setStringToLower((bool)$string_to_lower);
+			$this->config->setUseCamelCase((bool)$string_camelcase);
+			$this->config->setActiveUpdateExistingUsers((bool)$active_update);
+			$this->config->setAuthModeUpdate($auth_mode);
 
 			$contexts = array();
 
 			foreach($this->getContextArray() as $key => $value)
 			{
-				if($_POST["xagu_".$key])
+				if($result["context"][$key] === true)
 				{
 					$contexts[] = $key;
 				}
@@ -189,11 +168,12 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
 			ilUtil::sendSuccess($lng->txt("saved_successfully"), true);
 			$ilCtrl->redirect($this, "configure");
-		}
-		else
-		{
-			$form->setValuesByPost();
-			$tpl->setContent($form->getHtml());
+		} else {
+			$ilias->raiseError(
+				$lng->txt("autogenerateusername_form_not_evaluabe"),
+				$ilias->error_obj->MESSAGE
+			);
+			$ilCtrl->redirect($this, "configure");
 		}
 	}
 
@@ -237,7 +217,6 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	 */
 	public function getUDFPlaceholder()
 	{
-		include_once './Services/User/classes/class.ilUserDefinedFields.php';
 		$placeholder = array();
 		/**
 		 * @var ilUserDefinedFields $user_defined_fields
@@ -252,6 +231,35 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 			}
 		}
 		return $placeholder;
+	}
+
+	/**
+	 * Create placeholders HTML
+	 * @return string
+	 */
+	private function createPlaceholderHTML()
+	{
+		$pl = $this->getPluginObject();
+
+		$placeholders = "<br/><h2>".$pl->txt('placeholder_standard')."</h2>";
+		foreach($this->getStandardPlaceholder() as $text => $title)
+		{
+			$placeholders .= '<b><a href="#" onclick="insertTextIntoTextField(this.innerHTML, \'form_input_2\'); return false;">['.$text.']</a></b>:'.$title.'<br />';
+		}
+
+		$udf =$this->getUDFPlaceholder();
+		if(count($udf) > 0)
+		{
+			$placeholders .= "<br/><h2>".$pl->txt('placeholder_udf')."</h2>";
+			foreach($this->getUDFPlaceholder() as $text => $title)
+			{
+				$placeholders .= '<b><a href="#" onclick="insertTextIntoTextField(this.innerHTML, \'form_input_2\'); return false;">['.$text.']</a></b>:'.$title.'<br />';
+			}
+		}
+
+		$placeholders .= "<br/>";
+
+		return $placeholders;
 	}
 
 	/**

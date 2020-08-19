@@ -22,6 +22,7 @@ context_ldap#:#LDAP Authentication
 camel_case_info#:#Removes all cases and capitalize the first letter of all words (e.g "hello world" will be "HelloWorld")
 string_to_lower_info#:#All alphabetic uppercase characters will be converted to lowercase.
 template_info#:#Allowed characters: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Invalid Caracters will be removed automatically and results under 3 characters replaced by "invalid_login".<br />A Number will be attached if the result is not unique.
-update_exising#:#Update Existing User Accounts
+update_existing#:#Update Existing User Accounts
 active_update#:#Active
 select_auth_modes#:#Select Authentication Mode
+autogenerateusername_form_not_evaluabe#:#The form data couldn't be read.

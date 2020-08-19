@@ -1,0 +1,64 @@
+diff --git a/Services/Registration/classes/class.ilAccountRegistrationGUI.php b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+index 5038928825..649eaddb1c 100644
+--- a/Services/Registration/classes/class.ilAccountRegistrationGUI.php
++++ b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+@@ -345,26 +345,29 @@ class ilAccountRegistrationGUI
+             $form_valid = false;
+         }
+
++        // BEGIN Patch hide username in registration forms
+         // validate username
+-        $login_obj = $this->form->getItemByPostVar('username');
+-        $login = $this->form->getInput("username");
++//        $login_obj = $this->form->getItemByPostVar('username');
++//        $login = $this->form->getInput("username");
++        $login = "registration_".time();
+         $captcha = $this->form->getItemByPostVar("captcha_code");
+         if (!ilUtil::isLogin($login)) {
+-            $login_obj->setAlert($this->lng->txt("login_invalid"));
++            //$login_obj->setAlert($this->lng->txt("login_invalid"));
+             $form_valid = false;
+         } elseif (ilObjUser::_loginExists($login)) {
+-            if(!empty($captcha) && empty($captcha->getAlert()) || empty($captcha)) {
+-                $login_obj->setAlert($this->lng->txt("login_exists"));
+-            }
++//            if(!empty($captcha) && empty($captcha->getAlert()) || empty($captcha)) {
++//                $login_obj->setAlert($this->lng->txt("login_exists"));
++//            }
+             $form_valid = false;
+         } elseif ((int) $ilSetting->get('allow_change_loginname') &&
+             (int) $ilSetting->get('reuse_of_loginnames') == 0 &&
+             ilObjUser::_doesLoginnameExistInHistory($login)) {
+-            if(!empty($captcha) && empty($captcha->getAlert()) || empty($captcha)) {
+-                $login_obj->setAlert($this->lng->txt("login_exists"));
+-            }
++//            if(!empty($captcha) && empty($captcha->getAlert()) || empty($captcha)) {
++//                $login_obj->setAlert($this->lng->txt("login_exists"));
++//            }
+             $form_valid = false;
+         }
++        //END patch
+
+         if (!$form_valid) {
+             ilUtil::sendFailure($this->lng->txt('form_input_not_valid'));
+
+diff --git a/Services/User/classes/class.ilUserProfile.php b/Services/User/classes/class.ilUserProfile.php
+index 4faf2681bd..663f84fa00 100755
+--- a/Services/User/classes/class.ilUserProfile.php
++++ b/Services/User/classes/class.ilUserProfile.php
+@@ -533,7 +533,13 @@ class ilUserProfile
+                             $val->setValue($a_user->getLogin());
+                         }
+                     }
+-                    $a_form->addItem($val);
++                                       //BEGIN Patch hide username in registration forms
++                                       if(!self::$mode == self::MODE_REGISTRATION)
++                                       {
++                                               $a_form->addItem($val);
++                                       }
++                                       //$a_form->addItem($val);
++                                       //END Patch
+                     break;
+
+                 case "text":
+
