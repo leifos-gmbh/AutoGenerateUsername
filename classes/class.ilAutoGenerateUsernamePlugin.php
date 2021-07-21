@@ -26,7 +26,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	 * @return bool
 	 * @throws ilUserException
 	 */
-	public function handleEvent($a_component, $a_event, $a_params)
+	public function handleEvent($a_component, $a_event, $a_parameter)
 	{
 		ilLoggerFactory::getLogger('usr')->debug('Handling event from ' . $a_component .' ' . $a_event);
 		switch($a_component)
@@ -35,8 +35,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 				switch($a_event)
 				{
 					case 'afterLogin':
-						$user_login= $a_params['username'];
-						//ilLoggerFactory::getRootLogger()->debug(" username = ".$user_login);
+						$user_login= $a_parameter['username'];
 						$user_id = ilObjUser::_lookupId($user_login);
 						$user = new ilObjUser($user_id);
 						$user_auth_method = $user->getAuthMode();
@@ -61,7 +60,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 							/**
 							 * @var ilObjUser $user_obj
 							 */
-							$user_obj = $a_params['user_obj'];
+							$user_obj = $a_parameter['user_obj'];
 							if($user_obj instanceof ilObjUser)
 							{
 								$user_obj->updateLogin($this->generateUsername($user_obj));
@@ -75,12 +74,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return true;
 	}
 
-	/**
-	 * @param ilObjUser $a_usr
-	 * @param bool $a_demo
-	 * @return string
-	 */
-	public function generateUsername($a_usr, $a_demo = false)
+	public function generateUsername(ilObjUser $a_usr, bool $a_demo = false) : string
 	{
 		$settings = $this->getSettings();
 
@@ -177,7 +171,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	* generate free login by starting with a default string and adding
 	* postfix numbers
 	*/
-	public static function _generateLogin($a_login, $a_usr_id)
+	public static function _generateLogin(string $a_login, int $a_usr_id)
 	{
 		global $ilDB;
 		
@@ -189,7 +183,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		{
 			$r = $ilDB->query("SELECT login FROM usr_data WHERE login = ".
 				$ilDB->quote($c_login).' '.
-				'AND usr_id != '.$ilDB->quote($a_usr_id,'text'));
+				'AND usr_id != '.$ilDB->quote($a_usr_id, ilDBConstants::T_INTEGER));
 			if ($r->numRows() > 0)
 			{
 				$postfix++;
@@ -204,22 +198,18 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $c_login;
 	}
 
-
-	/**
-	 * @param ilObjUser $a_user
-	 * @return string[]
-	 */
-	protected function getMap($a_user)
+    /**
+     * @return string[]
+     */
+	protected function getMap(ilObjUser $a_user) : array
 	{
 		return array_merge($this->getUserMap($a_user), $this->getUDFMap($a_user));
 	}
 
-	/**
-	 * @param ilObjUser $a_user
-	 *
-	 * @return string[]
-	 */
-	protected function getUserMap($a_user)
+    /**
+     * @return string[]
+     */
+	protected function getUserMap(ilObjUser $a_user) : array
 	{
 		return array(
 			"login" => $a_user->getLogin(),
@@ -231,10 +221,9 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 	}
 
 	/**
-	 * @param ilObjUser $a_user
 	 * @return string[]
 	 */
-	protected function getUDFMap($a_user)
+	protected function getUDFMap(ilObjUser $a_user) : array
 	{
 		$map = array();
 		/**
@@ -253,23 +242,12 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $map;
 	}
 
-	/**
-	 * @param string $string
-	 * @return string
-	 */
-	public function camelCase($a_string)
+	public function camelCase(string $a_string) : string
 	{
 		return $string = str_replace(' ', '', ucwords($a_string));
 	}
 
-	/**
-	 * @param string $a_string
-	 * @param bool $a_str_to_lower
-	 * @param bool $a_camel_case
-	 * @param bool $a_umlauts
-	 * @return string
-	 */
-	public function validateString($a_string, $a_str_to_lower = false, $a_camel_case = false ,$a_umlauts = false)
+	public function validateString(string $a_string, bool $a_str_to_lower = false, bool $a_camel_case = false , bool $a_umlauts = false) : string
 	{
 		if($a_umlauts)
 		{
@@ -293,10 +271,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $a_string;
 	}
 
-	/**
-	 * @return ilAutoGenerateUsernameConfig
-	 */
-	protected function getSettings()
+	protected function getSettings() : ilAutoGenerateUsernameConfig
 	{
 		if(!$this->settings)
 		{
@@ -307,11 +282,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $this->settings;
 	}
 
-	/**
-	 * @param string $a_login
-	 * @return string
-	 */
-	protected function validateLogin($a_login)
+	protected function validateLogin(string $a_login) : string
 	{
 		$a_login = preg_replace('/[^A-Za-z0-9_\.\+\*\@!\$\%\~\-]+/', '', $a_login);
 
@@ -322,9 +293,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		return $a_login;
 	}
 
-	/**
-	 * uninstall plugin data
-	 */
 	protected function afterUninstall()
 	{
 		$settings = new ilSetting("xagu");
@@ -332,21 +300,12 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		$settings->deleteAll();
 	}
 
-	/**
-	 * @param string $a_string
-	 * @param string $a_replace
-	 * @return string
-	 */
-	protected function alphanumeric($a_string, $a_replace = '')
+	protected function alphanumeric(string $a_string, string $a_replace = '') : string
 	{
 		return preg_replace('/[_\.\+\*\@!\$\%\~\-]+/', $a_replace, $a_string);
 	}
 
-	/**
-	 * @param string $a_string
-	 * @return string
-	 */
-	protected function umlauts($a_string)
+	protected function umlauts(string $a_string) : string
 	{
 		return iconv("utf-8","ASCII//TRANSLIT",$a_string);
 	}

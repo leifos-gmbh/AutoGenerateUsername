@@ -45,21 +45,16 @@ class ilAutoGenerateUsernameConfig
 	/**
 	 * @var string
 	 */
-	protected $auth_mode_update;
+	protected $auth_mode_update = 'default';
 
-	/**
-	 * ilAutoGenerateUsernameConfig constructor.
-	 */
+
 	public function __construct()
 	{
 		$this->setting = new \ilSetting('xagu');
 		$this->read();
 	}
 
-	/**
-	 * Read settings
-	 */
-	public function read()
+	public function read() : void
 	{
 		$this->setting->read();
 		$this->setAllowedContexts(explode(';',$this->setting->get("xagu_contexts", implode(';',$this->getAllowedContexts()))));
@@ -71,7 +66,7 @@ class ilAutoGenerateUsernameConfig
 		$this->setAuthModeUpdate($this->setting->get('xagu_auth_mode', $this->getAuthModeUpdate()));
 	}
 
-	public function update()
+	public function update() : void
 	{
 		$this->setting->set("xagu_contexts", implode(';',$this->getAllowedContexts()));
 		$this->setting->set("xagu_id", $this->getIdSequenz());
@@ -82,131 +77,84 @@ class ilAutoGenerateUsernameConfig
 		$this->setting->set("xagu_auth_mode", $this->getAuthModeUpdate());
 	}
 
-	/**
-	 * @param array $allowed_contexts
-	 */
-	public function setAllowedContexts($allowed_contexts)
+	public function setAllowedContexts(array $allowed_contexts)
 	{
 		$this->allowed_contexts = $allowed_contexts;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getAllowedContexts()
+	public function getAllowedContexts() : array
 	{
 		return $this->allowed_contexts;
 	}
 
-	/**
-	 * @param int $id_sequenz
-	 */
-	public function setIdSequenz($id_sequenz)
+	public function setIdSequenz(int $id_sequenz)
 	{
 		$this->id_sequenz = $id_sequenz;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getIdSequenz()
+	public function getIdSequenz() : int
 	{
 		return $this->id_sequenz;
 	}
 
-	/**
-	 * @param string $login_template
-	 */
-	public function setLoginTemplate($login_template)
+	public function setLoginTemplate(string $login_template)
 	{
 		$this->login_template = $login_template;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getLoginTemplate()
+	public function getLoginTemplate() : string
 	{
 		return $this->login_template;
 	}
 
-	/**
-	 * @param bool $string_to_lower
-	 */
-	public function setStringToLower($string_to_lower)
+	public function setStringToLower(bool $string_to_lower)
 	{
 		$this->string_to_lower = $string_to_lower;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function getStringToLower()
+	public function getStringToLower() : bool
 	{
 		return $this->string_to_lower;
 	}
 
-	/**
-	 * @param bool $use_camelCase
-	 */
-	public function setUseCamelCase($use_camelCase)
+	public function setUseCamelCase(bool $use_camelCase)
 	{
 		$this->use_camelCase = $use_camelCase;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function getUseCamelCase()
+	public function getUseCamelCase() : bool
 	{
 		return $this->use_camelCase;
 	}
 
-	/**
-	 * @param $active_update
-	 */
-	public function setActiveUpdateExistingUsers($active_update)
+	public function setActiveUpdateExistingUsers(bool $active_update)
 	{
 		$this->active_update = $active_update;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function getActiveUpdateExistingUsers()
+	public function getActiveUpdateExistingUsers() : bool
 	{
 		return $this->active_update;
 	}
 
-	public function setAuthModeUpdate($mode)
+	public function setAuthModeUpdate(string $mode)
 	{
 		$this->auth_mode_update = $mode;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getAuthModeUpdate()
+	public function getAuthModeUpdate() : string
 	{
 		return $this->auth_mode_update;
 	}
 
-
-	/**
-	 * @return int
-	 */
-	public function getNextId()
+	public function getNextId() : int
 	{
 		$this->setIdSequenz($this->getIdSequenz()+1);
 		$this->setting->set("xagu_id", $this->getIdSequenz());
 		return $this->getIdSequenz();
 	}
 
-	/**
-	 * @param $a_context
-	 * @return bool
-	 */
-	public function isValidContext($a_context)
+	public function isValidContext($a_context) : bool
 	{
 
 		if(in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $a_context) && in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $this->getAllowedContexts()))
@@ -222,7 +170,7 @@ class ilAutoGenerateUsernameConfig
 		return false;
 	}
 
-	public function getStringActiveAuthModes()
+	public function getStringActiveAuthModes() : array
 	{
 		global $DIC;
 

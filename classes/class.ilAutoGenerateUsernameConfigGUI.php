@@ -19,7 +19,6 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	*/
 	function performCommand($cmd)
 	{
-
 		switch ($cmd)
 		{
 			case "configure":
@@ -29,10 +28,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		}
 	}
 
-	/**
-	 * Configure screen
-	 */
-	function configure()
+	function configure() : void
 	{
 		global $DIC;
 
@@ -41,12 +37,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		$tpl->setContent($DIC->ui()->renderer()->render($form));
 	}
 	
-	/**
-	 * Init configuration form.
-	 *
-	 * @return \ILIAS\UI\Component\Input\Container\Form\Standard form component
-	 */
-	public function initConfigurationForm()
+	public function initConfigurationForm() : \ILIAS\UI\Component\Input\Container\Form\Standard
 	{
 		global $DIC;
 
@@ -110,9 +101,8 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 	
 	/**
 	 * Save form input (currently does not save anything to db)
-	 *
 	 */
-	public function save()
+	public function save() : void
 	{
 		global $DIC;
 
@@ -177,21 +167,15 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		}
 	}
 
-	/**
-	 * init config
-	 */
-	public function initConfig()
+	public function initConfig() : void
 	{
 		$this->getPluginObject()->includeClass("class.ilAutoGenerateUsernameConfig.php");
 
 		$this->config = new ilAutoGenerateUsernameConfig();
 	}
 
-	/**
-	 * Get standard placeholders
-	 * @return array
-	 */
-	public function getStandardPlaceholder()
+
+	public function getStandardPlaceholder() : array
 	{
 		global $DIC;
 
@@ -211,11 +195,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		return $placeholder;
 	}
 
-	/**
-	 * Get udf placeholders
-	 * @return array
-	 */
-	public function getUDFPlaceholder()
+	public function getUDFPlaceholder() : array
 	{
 		$placeholder = array();
 		/**
@@ -233,11 +213,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		return $placeholder;
 	}
 
-	/**
-	 * Create placeholders HTML
-	 * @return string
-	 */
-	private function createPlaceholderHTML()
+	private function createPlaceholderHTML() : string
 	{
 		$pl = $this->getPluginObject();
 
@@ -262,11 +238,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		return $placeholders;
 	}
 
-	/**
-	 * Get context array
-	 * @return array
-	 */
-	public function getContextArray()
+	public function getContextArray() : array
 	{
 		$pl = $this->getPluginObject();
 

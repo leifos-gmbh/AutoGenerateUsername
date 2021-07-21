@@ -4,10 +4,10 @@ This ILIAS plugin provides an event hook to automatically create an username aft
 The username will be consisting of informations like firstname, lastname, email, a sequential number etc.
 
 **Minimum ILIAS Version:**
-6.0.0
+7.2
 
 **Maximum ILIAS Version:**
-6.9.999
+7.99
 
 **Responsible Developer:**
 Marvin Barz barz@leifos.de
@@ -41,12 +41,12 @@ Make sure you checked "Registration" on the username configuration context or ne
 Run this on your commandline top apply this patch:
 
 	cd <ILIAS_directory>
-	patch -l -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/6_x_xagu_hide_username_patch.diff
+	patch -l -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/7_x_xagu_hide_username_patch.diff
 
 To remove this patch run :
 
 	cd <ILIAS_directory>
-	patch -R -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/6_x_xagu_hide_username_patch.diff
+	patch -R -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/7_x_xagu_hide_username_patch.diff
 
 ### New in plugin version "5.3.1"
 
