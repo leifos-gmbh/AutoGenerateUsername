@@ -87,7 +87,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 		$template = $settings->getLoginTemplate();
 		$map = $this->getMap($a_usr);
 
-
 		while(ilStr::strPos($template, '[') !== false && ilStr::strPos($template, ']') !== false)
 		{
 			$start = ilStr::strPos($template, '[');

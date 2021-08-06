@@ -80,9 +80,10 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		//section update existing
 		$active_accounts = $ui->input()->field()->checkbox($pl->txt("active_update"))->withValue($this->config->getActiveUpdateExistingUsers());
 
+		$auth_mode = (string) ($this->config->getAuthModeUpdate() ?? 'default');
 		$authentication_select = $ui->input()->field()->select($pl->txt("select_auth_modes"), $this->config->getStringActiveAuthModes())
 									->withRequired(true)
-									->withValue($this->config->getAuthModeUpdate());
+									->withValue($auth_mode);
 
 		$update_existing_section = $ui->input()->field()->section([$active_accounts, $authentication_select], $pl->txt("update_existing"));
 
@@ -128,9 +129,6 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 		if ($request->getMethod() == "POST") {
 			$form   = $this->initConfigurationForm()->withRequest($request);
 			$result = $form->getData();
-
-			$DIC->logger()->usr()->dump($this->getContextArray());
-			$DIC->logger()->usr()->dump($result);
 
 			$template_string  = $result['configuration'][0];
 			$string_to_lower  = $result['configuration'][2];

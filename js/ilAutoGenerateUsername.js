@@ -5,7 +5,6 @@ function insertTextIntoTextField(text, obj_name)
     {
 		var objTextField = document.getElementsByName(obj_name)[0];
 
-		console.log(objTextField);
 		if (document.selection)
 		{
         	objTextField.focus();
