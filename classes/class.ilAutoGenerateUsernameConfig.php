@@ -1,5 +1,5 @@
 <?php
- 
+
 /**
  * Auto Generate Username configuration class
  *
@@ -8,153 +8,106 @@
  */
 class ilAutoGenerateUsernameConfig
 {
-    /**
-     * @var ilSetting
-     */
-    protected $setting;
-    /**
-     * @var string[]
-     */
-    protected $allowed_contexts = array();
-
-    /**
-     * @var string
-     */
-    protected $login_template = "[login]";
-
-    /**
-     * @var int
-     */
-    protected $id_sequenz = 1;
-
-    /**
-     * @var bool
-     */
-    protected $use_camelCase = false;
-
-    /**
-     * @var bool
-     */
-    protected $string_to_lower = true;
-
-    /**
-     * @var bool
-     */
-    protected $active_update = false;
-
-    /**
-     * @var string
-     */
-    protected $auth_mode_update = 'default';
-
+    private const SETTING_ALLOWED_CONTEXTS = 'xagu_contexts';
+    private const SETTING_LOGIN_TEMPLATE = 'xagu_template';
+    private const SETTING_ID_SEQUENCE = 'xagu_id';
+    private const SETTING_CAMEL_CASE = 'xagu_use_camel_case';
+    private const SETTING_STRING_TO_LOWER = 'xagu_string_to_lower';
+    private const SETTING_ACTIVE_UPDATE = 'xagu_active_update';
+    private const SETTING_AUTH_MODE_UPDATE = 'xagu_auth_mode';
+    private ilSetting $setting;
+    private ilLanguage $lng;
 
     public function __construct()
     {
+        global $DIC;
         $this->setting = new \ilSetting('xagu');
-        $this->read();
+        $this->lng = $DIC->language();
     }
 
-    public function read() : void
+    public function deleteAll(): void
     {
-        $this->setting->read();
-        $this->setAllowedContexts(explode(';', $this->setting->get("xagu_contexts", implode(';', $this->getAllowedContexts()))));
-        $this->setIdSequenz($this->setting->get("xagu_id", $this->getIdSequenz()));
-        $this->setLoginTemplate($this->setting->get("xagu_template", $this->getLoginTemplate()));
-        $this->setUseCamelCase((bool) $this->setting->get("xagu_use_camel_case", $this->getUseCamelCase()));
-        $this->setStringToLower((bool) $this->setting->get("xagu_string_to_lower", $this->getStringToLower()));
-        $this->setActiveUpdateExistingUsers((bool) $this->setting->get("xagu_active_update", $this->getActiveUpdateExistingUsers()));
-        $this->setAuthModeUpdate($this->setting->get('xagu_auth_mode', $this->getAuthModeUpdate()));
+        $this->setting->deleteAll();
     }
 
-    public function update() : void
+    public function setAllowedContexts(array $allowed_contexts): void
     {
-        $this->setting->set("xagu_contexts", implode(';', $this->getAllowedContexts()));
-        $this->setting->set("xagu_id", $this->getIdSequenz());
-        $this->setting->set("xagu_template", $this->getLoginTemplate());
-        $this->setting->set("xagu_use_camel_case", (int) $this->getUseCamelCase());
-        $this->setting->set("xagu_string_to_lower", (int) $this->getStringToLower());
-        $this->setting->set("xagu_active_update", (int) $this->getActiveUpdateExistingUsers());
-        $this->setting->set("xagu_auth_mode", $this->getAuthModeUpdate());
+        $this->setting->set(self::SETTING_ALLOWED_CONTEXTS, implode(';', $allowed_contexts));
     }
 
-    public function setAllowedContexts(array $allowed_contexts)
+    public function getAllowedContexts(): array
     {
-        $this->allowed_contexts = $allowed_contexts;
+        return explode(';', $this->setting->get(self::SETTING_ALLOWED_CONTEXTS, ""));
     }
 
-    public function getAllowedContexts() : array
+    public function setIdSequenz(int $id_sequenz): void
     {
-        return $this->allowed_contexts;
+        $this->setting->set(self::SETTING_ID_SEQUENCE, (string) $id_sequenz);
     }
 
-    public function setIdSequenz(int $id_sequenz)
+    public function getIdSequenz(): int
     {
-        $this->id_sequenz = $id_sequenz;
+        return (int) $this->setting->get(self::SETTING_ID_SEQUENCE, 1);
     }
 
-    public function getIdSequenz() : int
+    public function setLoginTemplate(string $login_template): void
     {
-        return $this->id_sequenz;
+        $this->setting->set(self::SETTING_LOGIN_TEMPLATE, $login_template);
     }
 
-    public function setLoginTemplate(string $login_template)
+    public function getLoginTemplate(): string
     {
-        $this->login_template = $login_template;
+        return $this->setting->get(self::SETTING_LOGIN_TEMPLATE, "[login]");
     }
 
-    public function getLoginTemplate() : string
+    public function setStringToLower(bool $string_to_lower): void
     {
-        return $this->login_template;
+        $this->setting->set(self::SETTING_STRING_TO_LOWER, (string) $string_to_lower);
     }
 
-    public function setStringToLower(bool $string_to_lower)
+    public function getStringToLower(): bool
     {
-        $this->string_to_lower = $string_to_lower;
+        return (bool) $this->setting->get(self::SETTING_STRING_TO_LOWER, true);
     }
 
-    public function getStringToLower() : bool
+    public function setUseCamelCase(bool $use_camelCase): void
     {
-        return $this->string_to_lower;
+        $this->setting->set(self::SETTING_CAMEL_CASE, (string) $use_camelCase);
     }
 
-    public function setUseCamelCase(bool $use_camelCase)
+    public function getUseCamelCase(): bool
     {
-        $this->use_camelCase = $use_camelCase;
+        return (bool) $this->setting->get(self::SETTING_CAMEL_CASE, false);
     }
 
-    public function getUseCamelCase() : bool
+    public function setActiveUpdateExistingUsers(bool $active_update): void
     {
-        return $this->use_camelCase;
+        $this->setting->set(self::SETTING_ACTIVE_UPDATE, (string) $active_update);
     }
 
-    public function setActiveUpdateExistingUsers(bool $active_update)
+    public function getActiveUpdateExistingUsers(): bool
     {
-        $this->active_update = $active_update;
+        return (bool) $this->setting->get(self::SETTING_ACTIVE_UPDATE, false);
     }
 
-    public function getActiveUpdateExistingUsers() : bool
+    public function setAuthModeUpdate(string $mode): void
     {
-        return $this->active_update;
+        $this->setting->set(self::SETTING_AUTH_MODE_UPDATE, $mode);
     }
 
-    public function setAuthModeUpdate(string $mode)
+    public function getAuthModeUpdate(): string
     {
-        $this->auth_mode_update = $mode;
+        return $this->setting->get(self::SETTING_AUTH_MODE_UPDATE, 'default');
     }
 
-    public function getAuthModeUpdate() : string
+    public function getNextId(): int
     {
-        return $this->auth_mode_update;
+        $id_sequence = $this->getIdSequenz();
+        $this->setIdSequenz($id_sequence + 1);
+        return $id_sequence + 1;
     }
 
-    public function getNextId() : int
-    {
-        $this->setIdSequenz($this->getIdSequenz() + 1);
-        $this->setting->set("xagu_id", $this->getIdSequenz());
-        return $this->getIdSequenz();
-    }
-
-    public function isValidContext($a_context) : bool
+    public function isValidContext($a_context): bool
     {
         if (in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $a_context) && in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $this->getAllowedContexts())) {
             return true;
@@ -167,12 +120,8 @@ class ilAutoGenerateUsernameConfig
         return false;
     }
 
-    public function getStringActiveAuthModes() : array
+    public function getStringActiveAuthModes(): array
     {
-        global $DIC;
-
-        $lng = $DIC->language();
-
         $modes = array();
         foreach (ilAuthUtils::_getActiveAuthModes() as $mode_name => $mode) {
             if (ilLDAPServer::isAuthModeLDAP($mode)) {
@@ -180,7 +129,7 @@ class ilAutoGenerateUsernameConfig
                 $name = $server->getName();
                 $modes[$mode_name] = $name;
             } else {
-                $modes[$mode_name] = $lng->txt("auth_" . $mode_name);
+                $modes[$mode_name] = $this->lng->txt("auth_" . $mode_name);
             }
         }
         return $modes;
