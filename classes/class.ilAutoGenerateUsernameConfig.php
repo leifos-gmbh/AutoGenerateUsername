@@ -110,7 +110,7 @@ class ilAutoGenerateUsernameConfig
         return $id_sequence + 1;
     }
 
-    public function isValidContext($a_context): bool
+    public function isValidContext(array $a_context): bool
     {
         if (in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $a_context) && in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $this->getAllowedContexts())) {
             return true;
