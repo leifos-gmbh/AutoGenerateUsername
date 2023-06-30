@@ -1,0 +1,68 @@
+diff --git a/Services/Registration/classes/class.ilAccountRegistrationGUI.php b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+index 96d8404f19..c8ca0ac72a 100644
+--- a/Services/Registration/classes/class.ilAccountRegistrationGUI.php
++++ b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+@@ -339,25 +339,29 @@ class ilAccountRegistrationGUI
+             $form_valid = false;
+         }
+ 
++        // BEGIN Patch hide username in registration forms
+         // validate username
+-        $login_obj = $this->form->getItemByPostVar('username');
+-        $login = $this->form->getInput("username");
++        // $login_obj = $this->form->getItemByPostVar('username');
++        // $login = $this->form->getInput("username");
++        $login = "registration_" . time();
++
+         if (!ilUtil::isLogin($login)) {
+-            $login_obj->setAlert($this->lng->txt("login_invalid"));
++            // $login_obj->setAlert($this->lng->txt("login_invalid"));
+             $form_valid = false;
+         }
+ 
+         if ($form_valid) {
+             if (ilObjUser::_loginExists($login)) {
+-                $login_obj->setAlert($this->lng->txt("login_exists"));
++                // $login_obj->setAlert($this->lng->txt("login_exists"));
+                 $form_valid = false;
+             } elseif ((int) $this->settings->get('allow_change_loginname') &&
+                 (int) $this->settings->get('reuse_of_loginnames') === 0 &&
+                 ilObjUser::_doesLoginnameExistInHistory($login)) {
+-                $login_obj->setAlert($this->lng->txt('login_exists'));
++                // $login_obj->setAlert($this->lng->txt('login_exists'));
+                 $form_valid = false;
+             }
+         }
++        // END Patch
+ 
+         if (!$form_valid) {
+             $this->tpl->setOnScreenMessage('failure', $this->lng->txt('form_input_not_valid'));
+@@ -413,6 +417,10 @@ class ilAccountRegistrationGUI
+             }
+         }
+ 
++        // BEGIN Patch hide username in registration forms
++        $this->userObj->setLogin('login_' . time());
++        // END Patch
++
+         $this->userObj->setFullName();
+ 
+         $birthday_obj = $this->form->getItemByPostVar("usr_birthday");
+diff --git a/Services/User/classes/class.ilUserProfile.php b/Services/User/classes/class.ilUserProfile.php
+index e75122383f..4cc39961de 100755
+--- a/Services/User/classes/class.ilUserProfile.php
++++ b/Services/User/classes/class.ilUserProfile.php
+@@ -555,7 +555,12 @@ class ilUserProfile
+                             $val->setValue($a_user->getLogin());
+                         }
+                     }
+-                    $a_form->addItem($val);
++                    // BEGIN Patch hide username in registration forms
++                    // $a_form->addItem($val);
++                    if(!self::$mode == self::MODE_REGISTRATION) {
++                        $a_form->addItem($val);
++                    }
++                    //END Patch
+                     break;
+ 
+                 case "text":
