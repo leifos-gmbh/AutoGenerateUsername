@@ -2,6 +2,8 @@
 
 /* Copyright (c) 1998-2009 ILIAS open source, Extended GPL, see docs/LICENSE */
 
+declare(strict_types=1);
+
 /**
  * @author Fabian Wolf <wolf@leifos.com>
  */
@@ -207,13 +209,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
      */
     protected function getUserMap(ilObjUser $a_user): array
     {
-        return array(
+        return [
             "login" => $a_user->getLogin(),
             "firstname" => $this->alphanumeric($a_user->getFirstname(), ' '),
             "lastname" => $this->alphanumeric($a_user->getLastname(), ' '),
             "email" => $a_user->getEmail(),
             "matriculation" => $a_user->getMatriculation()
-        );
+        ];
     }
 
     /**

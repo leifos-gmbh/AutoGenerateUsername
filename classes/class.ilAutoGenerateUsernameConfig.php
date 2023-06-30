@@ -6,6 +6,9 @@
  * @author Fabian Wolf <wolf@leifos.com>
  *
  */
+
+declare(strict_types=1);
+
 class ilAutoGenerateUsernameConfig
 {
     private const SETTING_ALLOWED_CONTEXTS = 'xagu_contexts';
@@ -47,7 +50,7 @@ class ilAutoGenerateUsernameConfig
 
     public function getIdSequenz(): int
     {
-        return (int) $this->setting->get(self::SETTING_ID_SEQUENCE, 1);
+        return (int) $this->setting->get(self::SETTING_ID_SEQUENCE, '1');
     }
 
     public function setLoginTemplate(string $login_template): void
@@ -67,7 +70,7 @@ class ilAutoGenerateUsernameConfig
 
     public function getStringToLower(): bool
     {
-        return (bool) $this->setting->get(self::SETTING_STRING_TO_LOWER, true);
+        return (bool) $this->setting->get(self::SETTING_STRING_TO_LOWER, '1');
     }
 
     public function setUseCamelCase(bool $use_camelCase): void
@@ -77,7 +80,7 @@ class ilAutoGenerateUsernameConfig
 
     public function getUseCamelCase(): bool
     {
-        return (bool) $this->setting->get(self::SETTING_CAMEL_CASE, false);
+        return (bool) $this->setting->get(self::SETTING_CAMEL_CASE, '');
     }
 
     public function setActiveUpdateExistingUsers(bool $active_update): void
@@ -87,7 +90,7 @@ class ilAutoGenerateUsernameConfig
 
     public function getActiveUpdateExistingUsers(): bool
     {
-        return (bool) $this->setting->get(self::SETTING_ACTIVE_UPDATE, false);
+        return (bool) $this->setting->get(self::SETTING_ACTIVE_UPDATE, '');
     }
 
     public function setAuthModeUpdate(string $mode): void

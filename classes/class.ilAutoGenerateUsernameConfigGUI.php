@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use ILIAS\UI\Component\Input\Container\Form\Standard;
 use ILIAS\UI\Implementation\Component\MessageBox\MessageBox;
 use ILIAS\UI\Renderer;
@@ -103,11 +105,11 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         $context_section = $this->ui->input()->field()->section($context_sections, $this->pl->txt("context"));
 
         $form_action = $this->ilCtrl->getFormActionByClass('ilAutoGenerateUsernameConfigGUI', 'save');
-        $form_elements = array(
+        $form_elements = [
             "configuration" => $configuration_section,
             "update_existing" => $update_existing_section,
             "context" => $context_section
-        );
+        ];
 
         return $this->ui->input()->container()->form()->standard($form_action, $form_elements);
     }
