@@ -125,10 +125,10 @@ class ilAutoGenerateUsernameConfig
 
     public function getStringActiveAuthModes(): array
     {
-        $modes = array();
+        $modes = [];
         foreach (ilAuthUtils::_getActiveAuthModes() as $mode_name => $mode) {
-            if (ilLDAPServer::isAuthModeLDAP($mode)) {
-                $server = ilLDAPServer::getInstanceByServerId(ilLDAPServer::getServerIdByAuthMode($mode));
+            if (ilLDAPServer::isAuthModeLDAP((string) $mode)) {
+                $server = ilLDAPServer::getInstanceByServerId(ilLDAPServer::getServerIdByAuthMode((string) $mode));
                 $name = $server->getName();
                 $modes[$mode_name] = $name;
             } else {
