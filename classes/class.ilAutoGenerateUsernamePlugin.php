@@ -55,24 +55,19 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
         }
     }
 
-    private function strPos(string $a_haystack, string $a_needle, ?int $a_offset = null)
+    private function strPos(string $a_haystack, string $a_needle)
     {
         if (function_exists("mb_strpos")) {
-            return mb_strpos($a_haystack, $a_needle, $a_offset, "UTF-8");
+
+            return mb_strpos($a_haystack, $a_needle, 0, "UTF-8");
         } else {
-            return strpos($a_haystack, $a_needle, $a_offset);
+            return strpos($a_haystack, $a_needle, 0);
         }
     }
 
-    private function subStr(string $a_str, int $a_start, ?int $a_length = null): string
+    private function subStr(string $a_str, int $a_start, int $a_length): string
     {
         if (function_exists("mb_substr")) {
-            // bug in PHP < 5.4.12: null is not supported as length (if encoding given)
-            // https://github.com/php/php-src/pull/133
-            if ($a_length === null) {
-                $a_length = mb_strlen($a_str, "UTF-8");
-            }
-
             return mb_substr($a_str, $a_start, $a_length, "UTF-8");
         } else {
             return substr($a_str, $a_start, $a_length);
