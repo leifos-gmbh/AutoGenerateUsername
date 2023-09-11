@@ -150,6 +150,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
                 $replacement = $replacement + $add;
             }
 
+            $replacement = '' . $replacement;
             $replacement = $this->validateString(
                 $replacement,
                 $this->settings->getStringToLower(),
