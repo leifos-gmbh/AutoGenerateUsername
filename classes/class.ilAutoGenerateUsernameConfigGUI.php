@@ -63,54 +63,66 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
     {
         // $this->initConfig();
         $this->config = new ilAutoGenerateUsernameConfig();
-
         $this->tpl->addJavaScript($this->pl->getDirectory() . "/js/ilAutoGenerateUsername.js");
-
         $placeholders = $this->createPlaceholderHTML();
-
         //section configuration
-        $template = $this->ui->input()->field()->text($this->pl->txt("template"), $this->pl->txt('template_info') . $placeholders)
-                                         ->withRequired(true)
-                                         ->withValue($this->config->getLoginTemplate());
-
-
-        $demo = $this->ui->input()->field()->text($this->pl->txt("demo"), $this->pl->txt('demo_info'))
-                                     ->withDisabled(true)
-                                     ->withValue($this->pl->generateUsername($this->ilUser, true));
-
-        $string_to_lower_choice = $this->ui->input()->field()->checkbox($this->pl->txt("string_to_lower"))->withValue($this->config->getStringToLower());
-
-        $camelcase_choice = $this->ui->input()->field()->checkbox($this->pl->txt("camel_case"))->withValue($this->config->getUseCamelCase());
-
-        $configuration_section = $this->ui->input()->field()->section([$template, $demo, $string_to_lower_choice, $camelcase_choice], $this->pl->txt("configuration"));
-
+        $template = $this->ui->input()->field()->text(
+            $this->pl->txt("template"),
+            $this->pl->txt('template_info') . $placeholders
+        )
+            ->withRequired(true)
+            ->withValue($this->config->getLoginTemplate());
+        $demo = $this->ui->input()->field()->text(
+            $this->pl->txt("demo"),
+            $this->pl->txt('demo_info')
+        )
+            ->withDisabled(true)
+            ->withValue($this->pl->generateUsername($this->ilUser, true));
+        $string_to_lower_choice = $this->ui->input()->field()->checkbox(
+            $this->pl->txt("string_to_lower")
+        )
+            ->withValue($this->config->getStringToLower());
+        $camelcase_choice = $this->ui->input()->field()->checkbox(
+            $this->pl->txt("camel_case")
+        )
+            ->withValue($this->config->getUseCamelCase());
+        $configuration_section = $this->ui->input()->field()->section(
+            [$template, $demo, $string_to_lower_choice, $camelcase_choice],
+            $this->pl->txt("configuration")
+        );
         //section update existing
-        $active_accounts = $this->ui->input()->field()->checkbox($this->pl->txt("active_update"))->withValue($this->config->getActiveUpdateExistingUsers());
-
-        $auth_mode = (string) ($this->config->getAuthModeUpdate() ?? 'default');
-        $authentication_select = $this->ui->input()->field()->select($this->pl->txt("select_auth_modes"), $this->config->getStringActiveAuthModes())
-                                    ->withRequired(true)
-                                    ->withValue($auth_mode);
-
-        $update_existing_section = $this->ui->input()->field()->section([$active_accounts, $authentication_select], $this->pl->txt("update_existing"));
-
+        $active_accounts = $this->ui->input()->field()->checkbox(
+            $this->pl->txt("active_update")
+        )
+            ->withValue($this->config->getActiveUpdateExistingUsers());
+        $auth_mode = ($this->config->getAuthModeUpdate() ?? 'default');
+        $authentication_select = $this->ui->input()->field()->select(
+            $this->pl->txt("select_auth_modes"),
+            $this->config->getStringActiveAuthModes()
+        )
+            ->withRequired(true)
+            ->withValue($auth_mode);
+        $update_existing_section = $this->ui->input()->field()->section(
+            [$active_accounts, $authentication_select],
+            $this->pl->txt("update_existing")
+        );
         //context section
         $context_sections = array();
         foreach ($this->getContextArray() as $key => $name) {
-            $context = $this->ui->input()->field()->checkbox($name)->withValue(in_array($key, $this->config->getAllowedContexts()));
-
+            $context = $this->ui->input()->field()->checkbox($name)
+                ->withValue(in_array($key, $this->config->getAllowedContexts()));
             $context_sections[$key] = $context;
         }
-
-        $context_section = $this->ui->input()->field()->section($context_sections, $this->pl->txt("context"));
-
+        $context_section = $this->ui->input()->field()->section(
+            $context_sections,
+            $this->pl->txt("context")
+        );
         $form_action = $this->ilCtrl->getFormActionByClass('ilAutoGenerateUsernameConfigGUI', 'save');
         $form_elements = [
             "configuration" => $configuration_section,
             "update_existing" => $update_existing_section,
             "context" => $context_section
         ];
-
         return $this->ui->input()->container()->form()->standard($form_action, $form_elements);
     }
 
@@ -124,26 +136,22 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         if ($request->getMethod() == "POST") {
             $form = $this->initConfigurationForm()->withRequest($request);
             $result = $form->getData();
-
             $template_string = $result['configuration'][0];
             $string_to_lower = $result['configuration'][2];
             $string_camelcase = $result['configuration'][3];
             $active_update = $result['update_existing'][0];
             $auth_mode = $result['update_existing'][1];
-
             $template = $this->pl->validateString(
                 $template_string,
                 (bool) $string_to_lower,
                 (bool) $string_camelcase,
                 true
             );
-
             $this->config->setLoginTemplate($template);
             $this->config->setStringToLower((bool) $string_to_lower);
             $this->config->setUseCamelCase((bool) $string_camelcase);
             $this->config->setActiveUpdateExistingUsers((bool) $active_update);
             $this->config->setAuthModeUpdate($auth_mode);
-
             $contexts = array();
             foreach ($this->getContextArray() as $key => $value) {
                 if ($result["context"][$key] === true) {
@@ -151,10 +159,13 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
                 }
             }
             $this->config->setAllowedContexts($contexts);
-
-            $this->configure($this->ui->messageBox()->success($this->lng->txt("saved_successfully")));
+            $this->configure($this->ui->messageBox()->success(
+                $this->lng->txt("saved_successfully"))
+            );
         } else {
-            $this->configure($this->ui->messageBox()->failure($this->lng->txt("autogenerateusername_form_not_evaluabe")));
+            $this->configure($this->ui->messageBox()->failure(
+                $this->lng->txt("autogenerateusername_form_not_evaluabe"))
+            );
         }
     }
 
@@ -175,7 +186,6 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
     {
         $placeholder = array();
         $user_defined_fields = ilUserDefinedFields::_getInstance();
-
         foreach ($user_defined_fields->getDefinitions() as $field_id => $definition) {
             if ($definition['field_type'] != UDF_TYPE_WYSIWYG) {
                 $placeholder["udf_" . $field_id] = $definition['field_name'];
@@ -188,19 +198,18 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
     {
         $placeholders = "<br/><h2>" . $this->pl->txt('placeholder_standard') . "</h2>";
         foreach ($this->getStandardPlaceholder() as $text => $title) {
-            $placeholders .= '<b><a href="#" onclick="insertTextIntoTextField(this.innerHTML, \'form_input_2\'); return false;">[' . $text . ']</a></b>:' . $title . '<br />';
+            $placeholders .= '<b><a href="#" onclick="insertTextIntoTextField(this.innerHTML, \'form_input_2\');'
+                . ' return false;">[' . $text . ']</a></b>:' . $title . '<br />';
         }
-
         $udf = $this->getUDFPlaceholder();
         if (count($udf) > 0) {
             $placeholders .= "<br/><h2>" . $this->pl->txt('placeholder_udf') . "</h2>";
             foreach ($this->getUDFPlaceholder() as $text => $title) {
-                $placeholders .= '<b><a href="#" onclick="insertTextIntoTextField(this.innerHTML, \'form_input_2\'); return false;">[' . $text . ']</a></b>:' . $title . '<br />';
+                $placeholders .= '<b><a href="#" onclick="insertTextIntoTextField(this.innerHTML, \'form_input_2\');'
+                    . ' return false;">[' . $text . ']</a></b>:' . $title . '<br />';
             }
         }
-
         $placeholders .= "<br/>";
-
         return $placeholders;
     }
 

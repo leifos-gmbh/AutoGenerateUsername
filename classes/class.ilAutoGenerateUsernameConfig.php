@@ -112,14 +112,18 @@ class ilAutoGenerateUsernameConfig
 
     public function isValidContext(array $a_context): bool
     {
-        if (in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $a_context) && in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $this->getAllowedContexts())) {
+        if (
+            in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $a_context) &&
+            in_array(ilUserCreationContext::CONTEXT_REGISTRATION, $this->getAllowedContexts())
+        ) {
             return true;
         }
-
-        if (in_array(ilUserCreationContext::CONTEXT_LDAP, $a_context) && in_array(ilUserCreationContext::CONTEXT_LDAP, $this->getAllowedContexts())) {
+        if (
+            in_array(ilUserCreationContext::CONTEXT_LDAP, $a_context) &&
+            in_array(ilUserCreationContext::CONTEXT_LDAP, $this->getAllowedContexts())
+        ) {
             return true;
         }
-
         return false;
     }
 

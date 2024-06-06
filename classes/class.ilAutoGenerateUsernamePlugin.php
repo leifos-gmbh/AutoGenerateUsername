@@ -31,7 +31,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
     public function handleEvent(string $a_component, string $a_event, array $a_parameter): void
     {
         ilLoggerFactory::getLogger('usr')->debug('Handling event from ' . $a_component . ' ' . $a_event);
-
         if($a_component === 'Services/Authentication' && $a_event === 'afterLogin') {
             $user_login = $a_parameter['username'];
             $user_id = ilObjUser::_lookupId($user_login);
@@ -43,7 +42,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
                 $this->ilDB->manipulate($query);
             }
         }
-
         if($a_component === 'Services/User' && $a_event === 'afterCreate') {
             $context = ilUserCreationContext::getInstance();
             if ($this->settings->isValidContext($context->getCurrentContexts())) {
@@ -58,7 +56,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
     private function strPos(string $a_haystack, string $a_needle)
     {
         if (function_exists("mb_strpos")) {
-
             return mb_strpos($a_haystack, $a_needle, 0, "UTF-8");
         } else {
             return strpos($a_haystack, $a_needle, 0);
@@ -96,7 +93,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
     {
         $template = $this->settings->getLoginTemplate();
         $map = $this->getMap($a_usr);
-
         while ($this->strPos($template, '[') !== false && $this->strPos($template, ']') !== false) {
             $start = $this->strPos($template, '[');
             $end = $this->strPos($template, ']');
@@ -104,14 +100,12 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             $length = 0;
             $add = 0;
             $replacement = "";
-
             if ($this->strPos($expression, ":")) {
                 $length = (int) $this->substr(
                     $expression,
                     $this->strPos($expression, ":") + 1,
                     $this->strPos($expression, ']') - $this->strPos($expression, ":") - 1
                 );
-
                 $var = $this->substr($expression, 1, $this->strPos($expression, ':') - 1);
             } elseif ($this->strPos($expression, "+")) {
                 $add = (int) $this->substr(
@@ -124,7 +118,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             } else {
                 $var = $this->substr($expression, 1, $this->strPos($expression, ']') - 1);
             }
-
             if ($var == "number") {
                 if ($a_demo) {
                     $replacement = $this->settings->getIdSequenz();
@@ -137,7 +130,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
                 //adding case to make sure that every replacement is handled as word in CamelCase function
                 $replacement = " " . $map[$var];
             }
-
             if ($length > 0 && $var == "number") {
                 while (strlen($replacement) < $length) {
                     $replacement = 0 . $replacement;
@@ -145,11 +137,9 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             } elseif ($length > 0 && $var != "number") {
                 $replacement = $this->substr($replacement, 1, $length);
             }
-
             if ($var == "number" && $add > 0) {
                 $replacement = $replacement + $add;
             }
-
             $replacement = '' . $replacement;
             $replacement = $this->validateString(
                 $replacement,
@@ -157,7 +147,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
                 $this->settings->getUseCamelCase(),
                 true
             );
-
             $template = str_replace($expression, $replacement, $template);
         }
         //validate to login
@@ -227,7 +216,6 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
                 $map["udf_" . $field_id] = $user_defined_data["f_" . $field_id];
             }
         }
-
         return $map;
     }
 
@@ -236,22 +224,23 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
         return str_replace(' ', '', ucwords($a_string));
     }
 
-    public function validateString(string $a_string, bool $a_str_to_lower = false, bool $a_camel_case = false, bool $a_umlauts = false): string
-    {
+    public function validateString(
+        string $a_string,
+        bool $a_str_to_lower = false,
+        bool $a_camel_case = false,
+        bool $a_umlauts = false
+    ): string {
         if ($a_umlauts) {
             $a_string = $this->umlauts($a_string);
         }
-
         if ($a_str_to_lower || $a_camel_case) {
             $a_string = $this->strToLower($a_string);
         }
-
         if ($a_camel_case) {
             $a_string = $this->camelCase($a_string);
         } else {
             $a_string = str_replace(' ', '', $a_string);
         }
-
         return $a_string;
     }
 

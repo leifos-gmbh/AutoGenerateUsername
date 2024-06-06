@@ -4,13 +4,13 @@ This ILIAS plugin provides an event hook to automatically create an username aft
 The username will be consisting of informations like firstname, lastname, email, a sequential number etc.
 
 **Minimum ILIAS Version:**
-8.0
+9.0
 
 **Maximum ILIAS Version:**
-8.99
+9.99
 
 **Responsible Developer:**
-Marvin Barz barz@leifos.de
+Christoph Ludolf ludolf@leifos.de
 
 **Supported Languages:**
 German, English
@@ -19,20 +19,19 @@ German, English
 [ILIAS MantisBT](http://www.ilias.de/mantis/search.php?project_id=3&category=AutoGenerateUsername)
 
 ### Quick Installation Guide
-1. Copy the content of this folder in <ILIAS_directory>/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername
+Get the plugin from github:
+```shell
+cd <ILIAS-ROOT>
+mkdir -p Customizing/global/plugins/Services/EventHandling/EventHook/
+cd Customizing/global/plugins/Services/EventHandling/EventHook/
+git clone -b release_9 https://github.com/leifos-gmbh/AutoGenerateUsername.git AutoGenerateUsername
+cd <ILIAS-ROOT>
+# run composer to update the classmap
+```
+Finally navigate to the plugin menu in the Administration area and install as well as activate the AutoGenerateUsername-plugin.
 
-2. Access to ILIAS and go to the administration page.
-
-3. Select "Plugins" in the menu on the right.
-
-5. Look for the AutoGenerateUsername plugin in the table and hit the "Action" button and select "Update".
-
-6. When ILIAS update the plugin, hit the "Action" button and select "Activate" that will appear instead of the "Update" link.
-
-7. Hit the "Action" button and select "Refresh Languages" to update the language-files.
-
-8. Now, you can visit the username configuration at "Action" and "Configure"
-
+### Configuration
+In the plugin menu select to configure the AutoGenerateUsername plugin.
 
 ### Patch Installation
 
@@ -42,15 +41,15 @@ Run this on your commandline top apply this patch:
 
 `````` shell
 	cd <ILIAS_directory>
-	patch -l -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/8_x_xagu_hide_username_patch.diff
+	patch -l -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/9_x_xagu_hide_username_patch.diff
 ``````
 
 To remove this patch run :
 
 `````` shell
 	cd <ILIAS_directory>
-	patch -R -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/8_x_xagu_hide_username_patch.diff
-``````
+`	patch -R -p1 < Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/9_x_xagu_hide_username_patch.diff
+```````
 
 ### New in plugin version "5.3.1"
 
