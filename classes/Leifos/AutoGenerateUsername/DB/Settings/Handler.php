@@ -9,7 +9,16 @@
 
 declare(strict_types=1);
 
-class ilAutoGenerateUsernameConfig
+namespace Leifos\AutoGenerateUsername\DB\Settings;
+
+use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterface;
+use ilSetting;
+use ilLanguage;
+use ilUserCreationContext;
+use ilAuthUtils;
+use ilLDAPServer;
+
+class Handler implements lfAGUDBSettingsInterface
 {
     private const SETTING_ALLOWED_CONTEXTS = 'xagu_contexts';
     private const SETTING_LOGIN_TEMPLATE = 'xagu_template';
@@ -21,11 +30,11 @@ class ilAutoGenerateUsernameConfig
     private ilSetting $setting;
     private ilLanguage $lng;
 
-    public function __construct()
-    {
-        global $DIC;
+    public function __construct(
+        ilLanguage $lng
+    ) {
         $this->setting = new \ilSetting('xagu');
-        $this->lng = $DIC->language();
+        $this->lng = $lng;
     }
 
     public function deleteAll(): void
@@ -43,12 +52,12 @@ class ilAutoGenerateUsernameConfig
         return explode(';', $this->setting->get(self::SETTING_ALLOWED_CONTEXTS, ""));
     }
 
-    public function setIdSequenz(int $id_sequenz): void
+    public function setIdSequence(int $id_sequence): void
     {
-        $this->setting->set(self::SETTING_ID_SEQUENCE, (string) $id_sequenz);
+        $this->setting->set(self::SETTING_ID_SEQUENCE, (string) $id_sequence);
     }
 
-    public function getIdSequenz(): int
+    public function getIdSequence(): int
     {
         return (int) $this->setting->get(self::SETTING_ID_SEQUENCE, '1');
     }
@@ -105,8 +114,8 @@ class ilAutoGenerateUsernameConfig
 
     public function getNextId(): int
     {
-        $id_sequence = $this->getIdSequenz();
-        $this->setIdSequenz($id_sequence + 1);
+        $id_sequence = $this->getIdSequence();
+        $this->setIdSequence($id_sequence + 1);
         return $id_sequence + 1;
     }
 
