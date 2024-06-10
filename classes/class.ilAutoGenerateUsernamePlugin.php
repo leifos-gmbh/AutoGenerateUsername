@@ -139,7 +139,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             }
 
             if ($length > 0 && $var == "number") {
-                while (strlen($replacement) < $length) {
+                while (strlen($replacement . "") < $length) {
                     $replacement = 0 . $replacement;
                 }
             } elseif ($length > 0 && $var != "number") {
