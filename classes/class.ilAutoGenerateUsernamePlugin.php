@@ -224,7 +224,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
         $user_defined_data = $a_user->getUserDefinedData();
         foreach ($user_defined_fields->getDefinitions() as $field_id => $definition) {
             if ($definition['field_type'] != UDF_TYPE_WYSIWYG) {
-                $map["udf_" . $field_id] = $user_defined_data["f_" . $field_id];
+                $map["udf_" . $field_id] = $user_defined_data["f_" . $field_id] ?? "";
             }
         }
 
