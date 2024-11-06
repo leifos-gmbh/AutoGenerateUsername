@@ -1,8 +1,18 @@
 diff --git a/Services/Registration/classes/class.ilAccountRegistrationGUI.php b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
-index 44211f4ed0c..f697fc95cc4 100644
+index 8dc85b73bd6..f0fc01acdd9 100644
 --- a/Services/Registration/classes/class.ilAccountRegistrationGUI.php
 +++ b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
-@@ -315,25 +315,29 @@ class ilAccountRegistrationGUI
+@@ -163,6 +163,9 @@ class ilAccountRegistrationGUI
+         $this->lng->loadLanguageModule("user");
+         // add fields to form
+         $this->user_profile->addStandardFieldsToForm($this->form, null, $custom_fields);
++        // BEGIN Patch hide username in registration forms
++        $this->form->removeItemByPostVar("username");
++        // END Patch
+         unset($custom_fields);
+ 
+         // set language selection to current display language
+@@ -315,25 +318,29 @@ class ilAccountRegistrationGUI
              $form_valid = false;
          }
  
@@ -37,7 +47,7 @@ index 44211f4ed0c..f697fc95cc4 100644
  
          if (!$form_valid) {
              $this->tpl->setOnScreenMessage('failure', $this->lng->txt('form_input_not_valid'));
-@@ -379,6 +383,10 @@ class ilAccountRegistrationGUI
+@@ -379,6 +386,10 @@ class ilAccountRegistrationGUI
              }
          }
  
@@ -48,35 +58,3 @@ index 44211f4ed0c..f697fc95cc4 100644
          $this->userObj->setFullName();
  
          $birthday_obj = $this->form->getItemByPostVar("usr_birthday");
-diff --git a/Services/User/classes/Profile/class.ilUserProfile.php b/Services/User/classes/Profile/class.ilUserProfile.php
-index f8402976382..1916c6f3b94 100755
---- a/Services/User/classes/Profile/class.ilUserProfile.php
-+++ b/Services/User/classes/Profile/class.ilUserProfile.php
-@@ -67,6 +67,11 @@ class ilUserProfile
-                 in_array($f, $this->skip_fields)) {
-                 continue;
-             }
-+            // BEGIN PATCH AutogenerateUsername
-+            if ($f == 'username') {
-+                continue;
-+            }
-+            // END PATCH AutogenerateUsernam
-             $fields[$f] = $p;
-         }
-         return $fields;
-@@ -451,8 +456,13 @@ class ilUserProfile
-             $login_input->setSize(255);
-             $login_input->setRequired(true);
-         }
--
--        if ($user !== null) {
-+        // BEGIN Patch hide username in registration forms
-+        if (
-+            $user !== null &&
-+            !$this->mode == self::MODE_REGISTRATION
-+        ) {
-+        //if ($user !== null) {
-+        // END Patch
-             $login_input->setValue($user->getLogin());
-         }
-         return $login_input;
