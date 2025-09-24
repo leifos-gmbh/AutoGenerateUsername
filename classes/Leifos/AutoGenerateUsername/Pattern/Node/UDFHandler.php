@@ -28,7 +28,7 @@ class UDFHandler implements lfAGUPatternNodeUDFInterface
         ) {
             return "";
         }
-        return " " . ($this->user->getUserDefinedData()[$f_field_id] ?? "");
+        return trim($this->user->getUserDefinedData()[$f_field_id]) ?? "";
     }
 
     public function formattContent(): bool

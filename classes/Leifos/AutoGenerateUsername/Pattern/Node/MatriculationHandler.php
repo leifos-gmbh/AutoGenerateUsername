@@ -11,7 +11,7 @@ class MatriculationHandler implements lfAGUPatternNodeMatriculationInterface
 
     public function toString(): string
     {
-        return " " . ($this->user->matriculation ?? "");
+        return $this->user->matriculation ?? "";
     }
 
     public function withUser(ilObjUser $user): lfAGUPatternNodeMatriculationInterface

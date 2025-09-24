@@ -11,7 +11,7 @@ class LoginHandler implements lfAGUPatternNodeLoginInterface
 
     public function toString(): string
     {
-        return " " . ($this->user->login ?? "");
+        return $this->user->login ?? "";
     }
 
     public function withUser(ilObjUser $user): lfAGUPatternNodeLoginInterface

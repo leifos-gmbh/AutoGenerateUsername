@@ -18,7 +18,7 @@ class EmailHandler implements lfAGUPatternNodeEmailInterface
 
     public function toString(): string
     {
-        return " " . ($this->user->getEmail() ?? "");
+        return $this->user->getEmail() ?? "";
     }
 
     public function formattContent(): bool
