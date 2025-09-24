@@ -50,8 +50,7 @@ class Handler implements lfAGUPatternInterface
                 ? $this->applyEnabledTransformation($node->toString())
                 : $node->toString();
         }
-        $result = implode("", $formatted_node_content);
-        $result = str_replace(" ", "", $result);
+        $result = trim(implode("", $formatted_node_content));
         $clean_result = preg_replace(
             self::PATTERN_ALLOWED_CHARACTERS,
             "",
