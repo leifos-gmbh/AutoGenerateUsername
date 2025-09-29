@@ -46,9 +46,10 @@ class Handler implements lfAGUPatternInterface
         $nodes = $this->createSegmentNodes($segments, $user, $demo);
         $formatted_node_content = [];
         foreach ($nodes as $node) {
-            $formatted_node_content[] = $node->formattContent()
-                ? $this->applyEnabledTransformation($node->toString())
-                : $node->toString();
+            $formatted_node_content[] = str_replace(' ', '',
+                $node->formattContent()
+                    ? $this->applyEnabledTransformation($node->toString())
+                    : $node->toString());
         }
         $result = trim(implode("", $formatted_node_content));
         $clean_result = preg_replace(
