@@ -19,8 +19,9 @@ class Collection implements lfAGUPatternNodeCollectionInterface
         $this->index = 0;
     }
 
-    public function withNode(lfAGUPatternNodeInterface $node): lfAGUPatternNodeCollectionInterface
-    {
+    public function withNode(
+        lfAGUPatternNodeInterface $node
+    ): lfAGUPatternNodeCollectionInterface {
         $clone = clone $this;
         $clone->elements[] = $node;
         return $clone;

@@ -7,9 +7,14 @@ use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterfac
 
 interface Handler
 {
-    public function withPattern(string $pattern): Handler;
+    public function withPattern(
+        string $pattern
+    ): Handler;
 
-    public function buildName(ilObjUser $user, bool $demo): string;
+    public function buildName(
+        ilObjUser $user,
+        bool $demo
+    ): string;
 
     public function cleanPattern(): string;
 

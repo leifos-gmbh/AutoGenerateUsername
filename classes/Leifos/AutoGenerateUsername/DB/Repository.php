@@ -9,15 +9,14 @@ use Leifos\AutoGenerateUsername\I\DB\User\Handler as lfAGUDBUserInterface;
 
 class Repository implements lfAGURepositoryInterface
 {
-    protected ilDBInterface $db;
-
-    public function __construct(ilDBInterface $db)
-    {
-        $this->db = $db;
+    public function __construct(
+        protected ilDBInterface $db
+    ) {
     }
 
-    public function generateLogin(lfAGUDBUserInterface $db_user): lfAGUDBUserInterface
-    {
+    public function generateLogin(
+        lfAGUDBUserInterface $db_user
+    ): lfAGUDBUserInterface {
         $found = false;
         $postfix = 0;
         $c_login = $db_user->getName();
@@ -35,8 +34,9 @@ class Repository implements lfAGURepositoryInterface
         return $db_user->withLogin($c_login);
     }
 
-    public function updateLogin(lfAGUDBUserInterface $db_user): void
-    {
+    public function updateLogin(
+        lfAGUDBUserInterface $db_user
+    ): void {
         $query = 'update usr_data set login = ' . $this->db->quote($db_user->getLogin(), 'text') . ' ' .
             'where usr_id = ' . $this->db->quote($db_user->getId(), 'integer');
         $this->db->manipulate($query);

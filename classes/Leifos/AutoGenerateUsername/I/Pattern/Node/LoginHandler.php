@@ -7,5 +7,7 @@ use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterf
 
 interface LoginHandler extends lfAGUPatternNodeInterface
 {
-    public function withUser(ilObjUser $user): LoginHandler;
+    public function withUser(
+        ilObjUser $user
+    ): LoginHandler;
 }

@@ -15,8 +15,9 @@ class TextHandler implements lfAGUPatternNodeTextInterface
         return $this->text ?? "";
     }
 
-    public function withText(string $text): TextHandler
-    {
+    public function withText(
+        string $text
+    ): TextHandler {
         $clone = clone $this;
         $clone->text = $text;
         return $clone;

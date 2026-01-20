@@ -7,5 +7,7 @@ use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterf
 
 interface MatriculationHandler extends lfAGUPatternNodeInterface
 {
-    public function withUser(ilObjUser $user): MatriculationHandler;
+    public function withUser(
+        ilObjUser $user
+    ): MatriculationHandler;
 }

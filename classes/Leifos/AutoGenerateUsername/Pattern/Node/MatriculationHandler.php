@@ -14,8 +14,9 @@ class MatriculationHandler implements lfAGUPatternNodeMatriculationInterface
         return $this->user->matriculation ?? "";
     }
 
-    public function withUser(ilObjUser $user): lfAGUPatternNodeMatriculationInterface
-    {
+    public function withUser(
+        ilObjUser $user
+    ): lfAGUPatternNodeMatriculationInterface {
         $clone = clone $this;
         $clone->user = $user;
         return $clone;

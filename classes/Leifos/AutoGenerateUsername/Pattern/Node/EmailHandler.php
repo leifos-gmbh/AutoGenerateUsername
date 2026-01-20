@@ -9,8 +9,9 @@ class EmailHandler implements lfAGUPatternNodeEmailInterface
 {
     protected ilObjUser $user;
 
-    public function withUser(ilObjUser $user): lfAGUPatternNodeEmailInterface
-    {
+    public function withUser(
+        ilObjUser $user
+    ): lfAGUPatternNodeEmailInterface {
         $clone = clone $this;
         $clone->user = $user;
         return $clone;

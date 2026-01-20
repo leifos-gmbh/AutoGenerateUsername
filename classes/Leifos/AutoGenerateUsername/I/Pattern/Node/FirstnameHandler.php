@@ -7,5 +7,7 @@ use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterf
 
 interface FirstnameHandler extends lfAGUPatternNodeInterface
 {
-    public function withUser(ilObjUser $user): FirstnameHandler;
+    public function withUser(
+        ilObjUser $user
+    ): FirstnameHandler;
 }

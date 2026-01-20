@@ -6,5 +6,7 @@ use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterf
 
 interface TextHandler extends lfAGUPatternNodeInterface
 {
-    public function withText(string $text): TextHandler;
+    public function withText(
+        string $text
+    ): TextHandler;
 }

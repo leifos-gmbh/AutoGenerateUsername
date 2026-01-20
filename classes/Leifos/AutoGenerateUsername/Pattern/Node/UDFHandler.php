@@ -36,15 +36,17 @@ class UDFHandler implements lfAGUPatternNodeUDFInterface
         return true;
     }
 
-    public function withUser(ilObjUser $user): lfAGUPatternNodeUDFInterface
-    {
+    public function withUser(
+        ilObjUser $user
+    ): lfAGUPatternNodeUDFInterface {
         $clone = clone $this;
         $clone->user = $user;
         return $clone;
     }
 
-    public function withFieldId(int $field_id): lfAGUPatternNodeUDFInterface
-    {
+    public function withFieldId(
+        int $field_id
+    ): lfAGUPatternNodeUDFInterface {
         $clone = clone $this;
         $clone->field_id = $field_id;
         return $clone;

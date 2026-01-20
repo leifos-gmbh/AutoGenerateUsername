@@ -7,5 +7,7 @@ use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterf
 
 interface EmailHandler extends lfAGUPatternNodeInterface
 {
-    public function withUser(ilObjUser $user): EmailHandler;
+    public function withUser(
+        ilObjUser $user
+    ): EmailHandler;
 }

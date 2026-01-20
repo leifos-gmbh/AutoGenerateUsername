@@ -13,15 +13,10 @@ use ilDBInterface;
 
 class Factory implements lfAGUFactoryInterface
 {
-    protected ilLanguage $lng;
-    protected ilDBInterface $db;
-
     public function __construct(
-        ilLanguage $lng,
-        ilDBInterface $db
+        protected ilLanguage $lng,
+        protected ilDBInterface $db
     ) {
-        $this->lng = $lng;
-        $this->db = $db;
     }
 
     public function db(): lfAGUDBFactoryInterface

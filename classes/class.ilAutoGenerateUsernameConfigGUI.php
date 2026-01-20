@@ -9,15 +9,10 @@ use ILIAS\UI\Factory;
 use ILIAS\HTTP\GlobalHttpState;
 use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
 use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
+use Leifos\AutoGenerateUsername\DB\Settings\Settings;
 
 /**
- * Auto generate username configuration GUI class
- *
- * @author Marvin Barz <barz@leifos.com>
- * @version $Id$
- *
  * @ilCtrl_IsCalledBy ilAutoGenerateUsernameConfigGUI : ilObjComponentSettingsGUI
- *
  */
 class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 {
@@ -73,7 +68,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
             $this->pl->txt('template_info') . $placeholders
         )
             ->withRequired(true)
-            ->withValue($settings->getLoginTemplate());
+            ->withValue($settings->read(Settings::LOGIN_TEMPLATE));
         $demo = $this->ui->input()->field()->text(
             $this->pl->txt("demo"),
             $this->pl->txt('demo_info')
@@ -83,11 +78,11 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         $string_to_lower_choice = $this->ui->input()->field()->checkbox(
             $this->pl->txt("string_to_lower")
         )
-            ->withValue($settings->getStringToLower());
+            ->withValue($settings->readAsBool(Settings::STRING_TO_LOWER));
         $camelcase_choice = $this->ui->input()->field()->checkbox(
             $this->pl->txt("camel_case")
         )
-            ->withValue($settings->getUseCamelCase());
+            ->withValue($settings->readAsBool(Settings::CAMEL_CASE));
         $configuration_section = $this->ui->input()->field()->section(
             [$template, $demo, $string_to_lower_choice, $camelcase_choice],
             $this->pl->txt("configuration")
@@ -96,8 +91,8 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         $active_accounts = $this->ui->input()->field()->checkbox(
             $this->pl->txt("active_update")
         )
-            ->withValue($settings->getActiveUpdateExistingUsers());
-        $auth_mode = ($settings->getAuthModeUpdate() ?? 'default');
+            ->withValue($settings->readAsBool(Settings::ACTIVE_UPDATE));
+        $auth_mode = ($settings->read(Settings::AUTH_MODE_UPDATE) ?? 'default');
         $authentication_select = $this->ui->input()->field()->select(
             $this->pl->txt("select_auth_modes"),
             $settings->getStringActiveAuthModes()
@@ -109,10 +104,10 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
             $this->pl->txt("update_existing")
         );
         //context section
-        $context_sections = array();
+        $context_sections = [];
         foreach ($this->getContextArray() as $key => $name) {
             $context = $this->ui->input()->field()->checkbox($name)
-                ->withValue(in_array($key, $settings->getAllowedContexts()));
+                ->withValue(in_array($key, $settings->readAsArray(Settings::ALLOWED_CONTEXTS)));
             $context_sections[$key] = $context;
         }
         $context_section = $this->ui->input()->field()->section(
@@ -135,29 +130,43 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
     {
         $settings = $this->agu_factory->db()->settings()->handler();
         $request = $this->http->request();
-        if ($request->getMethod() == "POST") {
-            $form = $this->initConfigurationForm()->withRequest($request);
-            $result = $form->getData();
-            $template_string = $result['configuration'][0];
-            $string_to_lower = $result['configuration'][2];
-            $string_camelcase = $result['configuration'][3];
-            $active_update = $result['update_existing'][0];
-            $auth_mode = $result['update_existing'][1];
-            $settings->setStringToLower((bool) $string_to_lower);
-            $settings->setUseCamelCase((bool) $string_camelcase);
-            $settings->setActiveUpdateExistingUsers((bool) $active_update);
-            $settings->setAuthModeUpdate($auth_mode);
-            $contexts = array();
+        $form = $this->initConfigurationForm()->withRequest($this->http->request());
+        /** @var Standard $form */
+        if ($request->getMethod() == "POST" && is_null($form->getError())) {
+            /** @var \ILIAS\UI\Component\Input\Field\Section $configuration */
+            /** @var \ILIAS\UI\Component\Input\Field\Section $update_existing */
+            /** @var \ILIAS\UI\Component\Input\Field\Section $context */
+            /** @var \ILIAS\UI\Component\Input\Field\Text $template */
+            /** @var \ILIAS\UI\Component\Input\Field\Checkbox $lowercase */
+            /** @var \ILIAS\UI\Component\Input\Field\Checkbox $camelcase */
+            /** @var \ILIAS\UI\Component\Input\Field\Checkbox $active */
+            /** @var \ILIAS\UI\Component\Input\Field\Select $auth_mode */
+            $result = $form->getInputs();
+            $configuration = $result['configuration'];
+            $update_existing = $result['update_existing'];
+            $context = $result['context'];
+            $template = $configuration->getInputs()[0];
+            $lowercase = $configuration->getInputs()[2];
+            $camelcase = $configuration->getInputs()[3];
+            $active = $update_existing->getInputs()[0];
+            $auth_mode = $update_existing->getInputs()[1];
+            $settings->set(Settings::STRING_TO_LOWER, (string)((bool) $lowercase->getValue()));
+            $settings->set(Settings::CAMEL_CASE, (string)((bool) $camelcase->getValue()));
+            $settings->set(Settings::ACTIVE_UPDATE, (string)((bool) $active->getValue()));
+            $settings->set(Settings::AUTH_MODE_UPDATE, $auth_mode->getValue() ?? '');
+            $contexts = [];
             foreach ($this->getContextArray() as $key => $value) {
-                if ($result["context"][$key] === true) {
+                /** @var \ILIAS\UI\Component\Input\Field\Checkbox $current_context */
+                $current_context = $context->getInputs()[$key];
+                if ($current_context->getValue()) {
                     $contexts[] = $key;
                 }
             }
-            $settings->setAllowedContexts($contexts);
+            $settings->set(Settings::ALLOWED_CONTEXTS, implode(';', $contexts));
             $template = $this->agu_factory->pattern()->handler()
-                ->withPattern($template_string)
+                ->withPattern($template->getValue())
                 ->cleanPattern();
-            $settings->setLoginTemplate($template);
+            $settings->set(Settings::LOGIN_TEMPLATE, $template);
             $this->configure($this->ui->messageBox()->success(
                 $this->lng->txt("saved_successfully"))
             );
@@ -183,7 +192,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
     public function getUDFPlaceholder(): array
     {
-        $placeholder = array();
+        $placeholder = [];
         $user_defined_fields = ilUserDefinedFields::_getInstance();
         foreach ($user_defined_fields->getDefinitions() as $field_id => $definition) {
             if ($definition['field_type'] != UDF_TYPE_WYSIWYG) {
@@ -214,9 +223,9 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 
     public function getContextArray(): array
     {
-        return array(
+        return [
             ilUserCreationContext::CONTEXT_REGISTRATION => $this->pl->txt("context_registration"),
             ilUserCreationContext::CONTEXT_LDAP => $this->pl->txt("context_ldap")
-        );
+        ];
     }
 }

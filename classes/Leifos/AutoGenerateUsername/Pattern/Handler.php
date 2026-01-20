@@ -8,32 +8,32 @@ use Leifos\AutoGenerateUsername\I\Pattern\Handler as lfAGUPatternInterface;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\Collection as lfAGUPatternNodeCollectionInterface;
 use Leifos\AutoGenerateUsername\Pattern\Segments as lfAGUPatternSegments;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\Factory as lfAGUPatternNodeFactoryInterface;
+use Leifos\AutoGenerateUsername\DB\Settings\Settings;
 
 class Handler implements lfAGUPatternInterface
 {
     public const PATTERN_ALLOWED_CHARACTERS = "/[^a-zA-Z0-9_.+@!$%~\[\]\- -]/";
     protected const DEFAULT_NAME = "invalid_login";
-
-    protected lfAGUDBSettingsInterface $settings;
-    protected lfAGUPatternNodeFactoryInterface $node_factory;
     protected string $pattern;
 
     public function __construct(
-        lfAGUDBSettingsInterface $settings,
-        lfAGUPatternNodeFactoryInterface $node_factory
+        protected lfAGUDBSettingsInterface $settings,
+        protected lfAGUPatternNodeFactoryInterface $node_factory
     ) {
-        $this->settings = $settings;
-        $this->node_factory = $node_factory;
     }
 
-    public function withPattern(string $pattern): lfAGUPatternInterface
-    {
+    public function withPattern(
+        string $pattern
+    ): lfAGUPatternInterface {
         $clone = clone $this;
         $clone->pattern = $pattern;
         return $clone;
     }
 
-    public function buildName(ilObjUser $user, bool $demo = false): string {
+    public function buildName(
+        ilObjUser $user,
+        bool $demo = false
+    ): string {
         if (!$this->valid()) {
             return self::DEFAULT_NAME;
         }
@@ -73,25 +73,31 @@ class Handler implements lfAGUPatternInterface
         return strlen($clean_pattern) > 3;
     }
 
-    protected function applyEnabledTransformation(string $input): string
-    {
+    protected function applyEnabledTransformation(
+        string $input
+    ): string {
         $input =  $this->umlauts($input);
-        if (isset($this->settings) && ($this->settings->getStringToLower()|| $this->settings->getUseCamelCase())) {
+        if (
+            $this->settings->readAsBool(Settings::STRING_TO_LOWER) ||
+            $this->settings->readAsBool(Settings::CAMEL_CASE)
+        ) {
             $input = $this->strToLower($input);
         }
-        if (isset($this->settings) && $this->settings->getUseCamelCase()) {
+        if ($this->settings->readAsBool(Settings::CAMEL_CASE)) {
             $input = $this->camelCase($input);
         }
         return $input;
     }
 
-    protected function camelCase(string $a_string): string
-    {
+    protected function camelCase(
+        string $a_string
+    ): string {
         return ucwords($a_string);
     }
 
-    protected function strToLower(string $a_string): string
-    {
+    protected function strToLower(
+        string $a_string
+    ): string {
         if (function_exists("mb_strtolower")) {
             return mb_strtolower($a_string, "UTF-8");
         } else {
@@ -99,8 +105,9 @@ class Handler implements lfAGUPatternInterface
         }
     }
 
-    protected function umlauts(string $a_string): string
-    {
+    protected function umlauts(
+        string $a_string
+    ): string {
         return iconv("utf-8", "ASCII//TRANSLIT", $a_string);
     }
 

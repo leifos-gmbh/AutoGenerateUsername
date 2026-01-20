@@ -14,8 +14,9 @@ class LastnameHandler implements lfAGUPatternNodeLastnameInterface
         return str_replace('-', ' ', $this->user->lastname) ?? "";
     }
 
-    public function withUser(ilObjUser $user): lfAGUPatternNodeLastnameInterface
-    {
+    public function withUser(
+        ilObjUser $user
+    ): lfAGUPatternNodeLastnameInterface {
         $clone = clone $this;
         $clone->user = $user;
         return $clone;

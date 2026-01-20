@@ -21,15 +21,17 @@ class NumberHandler implements lfAGUPatternNodeNumberInterface
         $this->length = 0;
     }
 
-    public function withSettings(lfAGUDBSettingsInterface $settings): NumberHandler
-    {
+    public function withSettings(
+        lfAGUDBSettingsInterface $settings
+    ): NumberHandler {
         $clone = clone $this;
         $clone->settings = $settings;
         return $clone;
     }
 
-    public function withLength(int $repeats): NumberHandler
-    {
+    public function withLength(
+        int $repeats
+    ): NumberHandler {
         $clone = clone $this;
         $clone->length = $repeats;
         return $clone;
@@ -42,8 +44,9 @@ class NumberHandler implements lfAGUPatternNodeNumberInterface
         return $clone;
     }
 
-    public function withDemo(bool $enabled): NumberHandler
-    {
+    public function withDemo(
+        bool $enabled
+    ): NumberHandler {
         $clone = clone $this;
         $clone->demo_enabled = $enabled;
         return $clone;

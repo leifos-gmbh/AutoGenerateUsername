@@ -10,8 +10,9 @@ class Handler implements lfAGUDBUserInterface
     protected string $login;
     protected int $id;
 
-    public function withName(string $name): lfAGUDBUserInterface
-    {
+    public function withName(
+        string $name
+    ): lfAGUDBUserInterface {
         $clone = clone $this;
         $clone->name = $name;
         return $clone;
@@ -22,8 +23,9 @@ class Handler implements lfAGUDBUserInterface
         return $this->name;
     }
 
-    public function withId(int $id): lfAGUDBUserInterface
-    {
+    public function withId(
+        int $id
+    ): lfAGUDBUserInterface {
         $clone = clone $this;
         $clone->id = $id;
         return $clone;
@@ -34,8 +36,9 @@ class Handler implements lfAGUDBUserInterface
         return $this->id;
     }
 
-    public function withLogin(string $login): lfAGUDBUserInterface
-    {
+    public function withLogin(
+        string $login
+    ): lfAGUDBUserInterface {
         $clone = clone $this;
         $clone->login = $login;
         return $clone;

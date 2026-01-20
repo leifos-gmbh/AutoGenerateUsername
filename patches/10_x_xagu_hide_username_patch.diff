@@ -1,7 +1,7 @@
-diff --git a/Services/Registration/classes/class.ilAccountRegistrationGUI.php b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
-index f6102fab9f6..f8f8a1ee94f 100644
---- a/Services/Registration/classes/class.ilAccountRegistrationGUI.php
-+++ b/Services/Registration/classes/class.ilAccountRegistrationGUI.php
+diff --git a/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php b/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php
+index ec181d8932f..ee6b62176aa 100755
+--- a/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php
++++ b/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php
 @@ -163,6 +163,14 @@ class ilAccountRegistrationGUI
          $this->lng->loadLanguageModule("user");
          // add fields to form
@@ -17,7 +17,7 @@ index f6102fab9f6..f8f8a1ee94f 100644
          unset($custom_fields);
  
          // set language selection to current display language
-@@ -315,25 +323,42 @@ class ilAccountRegistrationGUI
+@@ -315,24 +323,43 @@ class ilAccountRegistrationGUI
              $form_valid = false;
          }
  
@@ -25,12 +25,15 @@ index f6102fab9f6..f8f8a1ee94f 100644
 +        $xagu_plugin_settings = new ilSetting('xagu');
 +        $contexts = explode(';', $xagu_plugin_settings->get('xagu_contexts', ''));
 +        $is_registraton_context_enabled = in_array(1, is_array($contexts) ? $contexts : []);
++
          // validate username
 -        $login_obj = $this->form->getItemByPostVar('username');
 -        $login = $this->form->getInput("username");
++
 +        if ($is_registraton_context_enabled) {
 +            $login = "registration_" . time();
 +        }
++
 +        if (!$is_registraton_context_enabled) {
 +            $login_obj = $this->form->getItemByPostVar('username');
 +            $login = $this->form->getInput("username");
@@ -44,28 +47,35 @@ index f6102fab9f6..f8f8a1ee94f 100644
              $form_valid = false;
          }
  
-         if ($form_valid) {
-             if (ilObjUser::_loginExists($login)) {
--                $login_obj->setAlert($this->lng->txt("login_exists"));
-+                if (!$is_registraton_context_enabled) {
-+                    $login_obj->setAlert($this->lng->txt("login_exists"));
-+                }
-                 $form_valid = false;
-             } elseif ((int) $this->settings->get('allow_change_loginname') &&
-                 (int) $this->settings->get('reuse_of_loginnames') === 0 &&
-                 ilObjUser::_doesLoginnameExistInHistory($login)) {
--                $login_obj->setAlert($this->lng->txt('login_exists'));
-+                if (!$is_registraton_context_enabled) {
-+                    $login_obj->setAlert($this->lng->txt('login_exists'));
-+                }
-                 $form_valid = false;
+         // We should use the HTTP request stretching mechanisms here, according to Mantis #32037
+-        $username_checked_and_register_callback = function () use (&$form_valid, $login, $login_obj, $valid_role) {
++        $username_checked_and_register_callback = function () use (&$form_valid, $login, $login_obj, $valid_role, $is_registraton_context_enabled) {
+             if ($form_valid) {
+                 if (ilObjUser::_loginExists($login)) {
+-                    $login_obj->setAlert($this->lng->txt('login_exists'));
++                    if (!$is_registraton_context_enabled) {
++                        $login_obj->setAlert($this->lng->txt("login_exists"));
++                    }
+                     $form_valid = false;
+                 } elseif ((int) $this->settings->get('allow_change_loginname') &&
+                     (int) $this->settings->get('reuse_of_loginnames') === 0 &&
+                     ilObjUser::_doesLoginnameExistInHistory($login)) {
+-                    $login_obj->setAlert($this->lng->txt('login_exists'));
++                    if (!$is_registraton_context_enabled) {
++                        $login_obj->setAlert($this->lng->txt('login_exists'));
++                    }
+                     $form_valid = false;
+                 }
              }
-         }
+@@ -342,6 +369,7 @@ class ilAccountRegistrationGUI
+                 $this->distributeMails($password);
+             }
+         };
 +        // END Patch
  
-         if (!$form_valid) {
-             $this->tpl->setOnScreenMessage('failure', $this->lng->txt('form_input_not_valid'));
-@@ -382,6 +407,15 @@ class ilAccountRegistrationGUI
+         if (($register_duration = $this->settings->get('registration_duration')) !== null) {
+             $duration = $this->http->durations()->callbackDuration((int) $register_duration);
+@@ -395,6 +423,15 @@ class ilAccountRegistrationGUI
              }
          }
  

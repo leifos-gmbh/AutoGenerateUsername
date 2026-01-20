@@ -14,8 +14,9 @@ class LoginHandler implements lfAGUPatternNodeLoginInterface
         return $this->user->login ?? "";
     }
 
-    public function withUser(ilObjUser $user): lfAGUPatternNodeLoginInterface
-    {
+    public function withUser(
+        ilObjUser $user
+    ): lfAGUPatternNodeLoginInterface {
         $clone = clone $this;
         $clone->user = $user;
         return $clone;

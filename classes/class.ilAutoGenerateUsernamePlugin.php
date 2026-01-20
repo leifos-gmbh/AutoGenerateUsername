@@ -6,16 +6,17 @@ declare(strict_types=1);
 
 use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
 use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
+use Leifos\AutoGenerateUsername\DB\Settings\Settings;
 
-/**
- * @author Fabian Wolf <wolf@leifos.com>
- */
 class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 {
     protected lfAGUDFactoryInterface $agu_factory;
 
-    public function __construct(ilDBInterface $db, ilComponentRepositoryWrite $component_repository, string $id)
-    {
+    public function __construct(
+        ilDBInterface $db,
+        ilComponentRepositoryWrite $component_repository,
+        string $id
+    ) {
         global $DIC;
         parent::__construct($db, $component_repository, $id);
         $this->agu_factory = new lfAGUDFactory($DIC->language(), $DIC->database());
@@ -39,8 +40,8 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             $user = new ilObjUser($user_id);
             $user_auth_method = $user->getAuthMode();
             if (
-                $settings->getActiveUpdateExistingUsers() &&
-                $settings->getAuthModeUpdate() == $user_auth_method
+                $settings->readAsBool(Settings::ACTIVE_UPDATE) &&
+                $settings->read(Settings::AUTH_MODE_UPDATE) == $user_auth_method
             ) {
                 $login = $this->generateUsername($user);
                 $this->agu_factory->db()->repository()->updateLogin(
@@ -66,40 +67,18 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
     {
         $settings = $this->agu_factory->db()->settings()->handler();
         $pattern = $this->agu_factory->pattern()->handler()
-            ->withPattern($settings->getLoginTemplate());
+            ->withPattern($settings->read(Settings::LOGIN_TEMPLATE));
         $new_user = $this->agu_factory->db()->repository()->generateLogin(
             $this->agu_factory->db()->user()->handler()
                 ->withName($pattern->buildName($a_usr, $a_demo))
                 ->withId($a_usr->getId())
         );
-        global $DIC;
-        $DIC->logger()->root()->debug($new_user->getName());
-        $DIC->logger()->root()->debug($new_user->getLogin());
         return $new_user->getLogin();
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getUserMap(ilObjUser $a_user): array
-    {
-        return [
-            "login" => $a_user->getLogin(),
-            "firstname" => $this->alphanumeric($a_user->getFirstname(), ' '),
-            "lastname" => $this->alphanumeric($a_user->getLastname(), ' '),
-            "email" => $a_user->getEmail(),
-            "matriculation" => $a_user->getMatriculation()
-        ];
     }
 
     protected function afterUninstall(): void
     {
         $settings = $this->agu_factory->db()->settings()->handler();
         $settings->deleteAll();
-    }
-
-    protected function alphanumeric(string $a_string, string $a_replace = ''): string
-    {
-        return preg_replace('/[_\.\+\*\@!\$\%\~\-]+/', $a_replace, $a_string);
     }
 }

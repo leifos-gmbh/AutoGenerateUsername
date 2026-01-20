@@ -9,8 +9,9 @@ class FirstnameHandler implements lfAGUPatternNodeFirstNameInterface
 {
     protected ilObjUser $user;
 
-    public function withUser(ilObjUser $user): lfAGUPatternNodeFirstNameInterface
-    {
+    public function withUser(
+        ilObjUser $user
+    ): lfAGUPatternNodeFirstNameInterface {
         $clone = clone $this;
         $clone->user = $user;
         return $clone;

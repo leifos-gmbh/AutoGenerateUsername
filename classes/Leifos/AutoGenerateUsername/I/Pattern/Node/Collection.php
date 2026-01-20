@@ -8,7 +8,9 @@ use Iterator;
 
 interface Collection extends Countable, Iterator
 {
-    public function withNode(lfAGUPatternNodeInterface $node): Collection;
+    public function withNode(
+        lfAGUPatternNodeInterface $node
+    ): Collection;
 
     public function current() : lfAGUPatternNodeInterface;
 

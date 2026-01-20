@@ -9,12 +9,9 @@ use ilLanguage;
 
 class Factory implements lfAGUDBSettingsFactoryInterface
 {
-    protected ilLanguage $lng;
-
     public function __construct(
-        ilLanguage $lng
+        protected ilLanguage $lng
     ) {
-        $this->lng = $lng;
     }
 
     public function handler(): lfAGUDBSettingsInterface

@@ -11,11 +11,9 @@ use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterfac
 
 class Factory implements lfAGUPatternFactoryInterface
 {
-    protected lfAGUDBSettingsInterface $settings;
-
-    public function __construct(lfAGUDBSettingsInterface $settings)
-    {
-        $this->settings = $settings;
+    public function __construct(
+        protected lfAGUDBSettingsInterface $settings
+    ) {
     }
 
     public function node(): lfAGUPatternNodeFactoryInterface
