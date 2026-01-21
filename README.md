@@ -30,7 +30,7 @@ cd public/Customizing/global/plugins/Services/EventHandling/EventHook/
 ```
 Download the plugin.
 ```shell
-git clone -b release_9 https://github.com/leifos-gmbh/AutoGenerateUsername.git AutoGenerateUsername
+git clone -b release_10 https://github.com/leifos-gmbh/AutoGenerateUsername.git AutoGenerateUsername
 ```
 Afterwards execute composer to build the classmaps.
 Finally navigate activate and configure the plugin in the ILIAS Administration.
