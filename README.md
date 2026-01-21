@@ -49,7 +49,7 @@ Navigate to the ILIAS root directory and execute the following command to apply 
 
 Navigate to the ILIAS root directory and execute the following command to remove the patch:
 `````` shell
-`	patch -R -p1 < public/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/10_x_xagu_hide_username_patch.diff
+	patch -R -p1 < public/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/10_x_xagu_hide_username_patch.diff
 ```````
 
 ### New in plugin version "5.3.1"
