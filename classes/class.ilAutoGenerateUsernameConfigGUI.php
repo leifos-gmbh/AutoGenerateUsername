@@ -50,9 +50,9 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         }
     }
 
-    public function configure(MessageBox $messageBox = null): void
+    public function configure(MessageBox $messageBox = null, Standard $form = null): void
     {
-        $form = $this->initConfigurationForm();
+        $form = is_null($form) ? $this->initConfigurationForm() : $form;
         $content = is_null($messageBox) ? [ $form ] : [ $messageBox, $form ];
         $this->tpl->setContent($this->renderer->render($content));
     }
@@ -168,11 +168,13 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
                 ->cleanPattern();
             $settings->set(Settings::LOGIN_TEMPLATE, $template);
             $this->configure($this->ui->messageBox()->success(
-                $this->lng->txt("saved_successfully"))
+                $this->lng->txt("saved_successfully")),
+                $form
             );
         } else {
-            $this->configure($this->ui->messageBox()->failure(
-                $this->lng->txt("autogenerateusername_form_not_evaluabe"))
+            $this->configure(
+                null,
+                $form
             );
         }
     }
