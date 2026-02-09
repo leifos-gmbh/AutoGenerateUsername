@@ -78,12 +78,11 @@ class Handler implements lfAGUPatternInterface
     ): string {
         $input =  $this->umlauts($input);
         if (
-            $this->settings->readAsBool(Settings::STRING_TO_LOWER) ||
-            $this->settings->readAsBool(Settings::CAMEL_CASE)
+            in_array($this->settings->read(Settings::STYLE_RADIO), ['string_to_lower', 'camel_case'])
         ) {
             $input = $this->strToLower($input);
         }
-        if ($this->settings->readAsBool(Settings::CAMEL_CASE)) {
+        if ($this->settings->read(Settings::STYLE_RADIO) === 'camel_case') {
             $input = $this->camelCase($input);
         }
         return $input;

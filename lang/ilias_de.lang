@@ -6,6 +6,8 @@ demo_info#:#Speichern Sie das Formular, um zu sehen, wie Ihr autgogenerierter An
 placeholder#:#Platzhalter
 placeholder_advice#:#Klicken Sie auf Platzhalter, um sie in die Vorlage einzufügen.<br>Mit :Wert (bsp. [firstname:3]) wird das Ergebniss auf diesen Wert gekürzt.<br />Für [number] gilt :Wert der Nummerierung werden Nullen vorgeschoben, sodass das Ergebnis die Länge des Wertes erreicht und +Wert legt den Startwert der Nummerierung fest.
 string_to_lower#:#Alles klein
+style_radio#:#Format
+none#:#-
 camel_case#:#CamelCase
 context#:#Kontext
 number#:#Laufende Nummer

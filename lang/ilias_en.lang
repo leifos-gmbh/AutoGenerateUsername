@@ -6,6 +6,8 @@ demo_info#:#You will see a demonstration of the result with your data after savi
 placeholder#:#Placeholder
 placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :number (e.g. [firstname:3]) the value of the placeholder will be cut to this number. <br />With [number:value] zeros will be prepended (e.g. [number:3] will make 007 or [number:4] will make 0042) and with [number+value] the start value will be set to value.
 string_to_lower#:#Username is Only in Lower Cases
+style_radio#:#Format
+none#:#-
 camel_case#:#CamelCase
 context#:#Context
 number#:#Serial Number

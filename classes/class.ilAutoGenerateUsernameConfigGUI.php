@@ -10,6 +10,7 @@ use ILIAS\HTTP\GlobalHttpState;
 use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
 use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
 use Leifos\AutoGenerateUsername\DB\Settings\Settings;
+use Leifos\AutoGenerateUsername\DB\Settings\StyleOptions;
 
 /**
  * @ilCtrl_IsCalledBy ilAutoGenerateUsernameConfigGUI : ilObjComponentSettingsGUI
@@ -75,16 +76,13 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         )
             ->withDisabled(true)
             ->withValue($this->pl->generateUsername($this->ilUser, true));
-        $string_to_lower_choice = $this->ui->input()->field()->checkbox(
-            $this->pl->txt("string_to_lower")
-        )
-            ->withValue($settings->readAsBool(Settings::STRING_TO_LOWER));
-        $camelcase_choice = $this->ui->input()->field()->checkbox(
-            $this->pl->txt("camel_case")
-        )
-            ->withValue($settings->readAsBool(Settings::CAMEL_CASE));
+        $style_radio = $this->ui->input()->field()->radio($this->pl->txt('style_radio'))
+            ->withOption(StyleOptions::NONE->value, $this->pl->txt("none"))
+            ->withOption(StyleOptions::STRING_TO_LOWER->value, $this->pl->txt("string_to_lower"))
+            ->withOption(StyleOptions::CAMEL_CASE->value, $this->pl->txt("camel_case"))
+            ->withValue($settings->read(Settings::STYLE_RADIO) === '' ? 'none' : $settings->read(Settings::STYLE_RADIO));
         $configuration_section = $this->ui->input()->field()->section(
-            [$template, $demo, $string_to_lower_choice, $camelcase_choice],
+            [$template, $demo, $style_radio],
             $this->pl->txt("configuration")
         );
         //section update existing
@@ -137,8 +135,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
             /** @var \ILIAS\UI\Component\Input\Field\Section $update_existing */
             /** @var \ILIAS\UI\Component\Input\Field\Section $context */
             /** @var \ILIAS\UI\Component\Input\Field\Text $template */
-            /** @var \ILIAS\UI\Component\Input\Field\Checkbox $lowercase */
-            /** @var \ILIAS\UI\Component\Input\Field\Checkbox $camelcase */
+            /** @var \ILIAS\UI\Component\Input\Field\Radio $style_radio */
             /** @var \ILIAS\UI\Component\Input\Field\Checkbox $active */
             /** @var \ILIAS\UI\Component\Input\Field\Select $auth_mode */
             $result = $form->getInputs();
@@ -146,12 +143,10 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
             $update_existing = $result['update_existing'];
             $context = $result['context'];
             $template = $configuration->getInputs()[0];
-            $lowercase = $configuration->getInputs()[2];
-            $camelcase = $configuration->getInputs()[3];
+            $style_radio = $configuration->getInputs()[2];
             $active = $update_existing->getInputs()[0];
             $auth_mode = $update_existing->getInputs()[1];
-            $settings->set(Settings::STRING_TO_LOWER, (string)((bool) $lowercase->getValue()));
-            $settings->set(Settings::CAMEL_CASE, (string)((bool) $camelcase->getValue()));
+            $settings->set(Settings::STYLE_RADIO, (string) $style_radio->getValue());
             $settings->set(Settings::ACTIVE_UPDATE, (string)((bool) $active->getValue()));
             $settings->set(Settings::AUTH_MODE_UPDATE, $auth_mode->getValue() ?? '');
             $contexts = [];
