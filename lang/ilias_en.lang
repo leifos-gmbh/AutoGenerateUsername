@@ -1,11 +1,11 @@
 <!-- language file start -->
-configuration#:#Configuration
-template#:#Template
-demo#:#Demo
+configuration#:#Usernames for New Accounts
+template#:#Target Format of Usernames to be Generated Automatically
+demo#:#Target Format applied to Your Username
 demo_info#:#You will see a demonstration of the result with your data after saving.
 placeholder#:#Placeholder
 placeholder_advice#:#Tab at the placeholder to place it into the template.<br>With :number (e.g. [firstname:3]) the value of the placeholder will be cut to this number. <br />With [number:value] zeros will be prepended (e.g. [number:3] will make 007 or [number:4] will make 0042) and with [number+value] the start value will be set to value.
-string_to_lower#:#Lowercased
+string_to_lower#:#Username is Only in Lower Cases
 camel_case#:#CamelCase
 context#:#Context
 number#:#Serial Number
@@ -19,6 +19,6 @@ camel_case_info#:#Removes all cases and capitalize the first letter of all words
 string_to_lower_info#:#All alphabetic uppercase characters will be converted to lowercase.
 template_info#:#Allowed characters: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Invalid Caracters will be removed automatically and results under 3 characters replaced by "invalid_login".<br />A Number will be attached if the result is not unique.
 update_existing#:#Update Existing User Accounts
-active_update#:#Active
-select_auth_modes#:#Select Authentication Mode
+active_update#:#Change Usernames of Existing Usernames
+select_auth_modes#:#Change for Accounts with Authentication Mode
 autogenerateusername_form_not_evaluabe#:#The form data couldn't be read.

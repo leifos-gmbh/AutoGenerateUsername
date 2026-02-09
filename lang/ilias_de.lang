@@ -1,8 +1,8 @@
 <!-- language file start -->
-configuration#:#Konfiguration
-template#:#Vorlage
-demo#:#Demo
-demo_info#:#Nach dem Speichern sehen Sie hier das Ergebnis als Demo mit ihren Daten.
+configuration#:#Anmeldenamen für neue Konten
+template#:#Format der automatisch zu generierenden Anmeldename
+demo#:#Beispiel für Ihr Konto
+demo_info#:#Speichern Sie das Formular, um zu sehen, wie Ihr autgogenerierter Anmeldename lauten würde.
 placeholder#:#Platzhalter
 placeholder_advice#:#Klicken Sie auf Platzhalter, um sie in die Vorlage einzufügen.<br>Mit :Wert (bsp. [firstname:3]) wird das Ergebniss auf diesen Wert gekürzt.<br />Für [number] gilt :Wert der Nummerierung werden Nullen vorgeschoben, sodass das Ergebnis die Länge des Wertes erreicht und +Wert legt den Startwert der Nummerierung fest.
 string_to_lower#:#Alles klein
@@ -10,15 +10,15 @@ camel_case#:#CamelCase
 context#:#Kontext
 number#:#Laufende Nummer
 hash#:#Zufalls Zeichenkette
-placeholder_standard#:#Standard
-placeholder_udf#:#Benutzerdefinierte Felder
+placeholder_standard#:#Verfügbare Standard-Platzhalter
+placeholder_udf#:#Verfügbare Benutzerdefinierte Felder
 context_registration#:#Registrierung
 context_administration#:#Administration
 context_ldap#:#LDAP Authentifizierung
 camel_case_info#:#Entfernt alle Leerzeichen und schreibt jedes Wort hinter einem Leerzeichen groß. (bsp. "hallo welt" wird zu "HalloWelt")
-string_to_lower_info#:#Alle Großbuchstaben werden in Kleinbuchstaben umgewandelt.
-template_info#:#Erlaubte Zeichen: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Unerlaubte Zeichen werden automatisch entfernt und Ergebnisse unter 3 Zeichen ersetzt durch "invalid_login".<br />Wenn das Ergebnis schon als Benutzername existiert, wird eine Nummer angefügt.
-update_existing#:#Vorhandene Benutzerkonten aktualisieren
-active_update#:#Aktiv
-select_auth_modes#:#Authentifizierungsmodus auswählen
+string_to_lower#:#Nur Kleinbuchstaben verwenden
+template_info#:#Erlaubte Zeichen: A-Z a-z 0-9 _ . + * @ ! $ % ~ -<br />Unerlaubte Zeichen werden automatisch entfernt. <br />Generierte Anmeldenamen mit weniger als 3 Zeichen werden ersetzt durch "invalid_login".<br />Wenn ein generierter Anmeldename schon als Konto existiert, wird eine Nummer angefügt.
+update_existing#:#Bestehende Anmeldekonten ändern
+active_update#:#Vorhandene Anmeldekonten umbenennen
+select_auth_modes#:#Ändern für Konten mit dem Authentifizierungsmodus
 autogenerateusername_form_not_evaluabe#:#Das Formular konnte nicht ausgelesen werden.
