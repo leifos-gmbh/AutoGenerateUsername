@@ -34,7 +34,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
     {
         $settings = $this->agu_factory->db()->settings()->handler();
         ilLoggerFactory::getLogger('usr')->debug('Handling event from ' . $a_component . ' ' . $a_event);
-        if($a_component === 'Services/Authentication' && $a_event === 'afterLogin') {
+        if($a_component === 'components/ILIAS/Authentication' && $a_event === 'afterLogin') {
             $user_login = $a_parameter['username'];
             $user_id = ilObjUser::_lookupId($user_login);
             $user = new ilObjUser($user_id);
@@ -52,7 +52,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
                 );
             }
         }
-        if($a_component === 'Services/User' && $a_event === 'afterCreate') {
+        if($a_component === 'components/ILIAS/User' && $a_event === 'afterCreate') {
             $context = ilUserCreationContext::getInstance();
             if ($settings->isValidContext($context->getCurrentContexts())) {
                 $user_obj = $a_parameter['user_obj'];
