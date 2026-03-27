@@ -39,9 +39,13 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             $user_id = ilObjUser::_lookupId($user_login);
             $user = new ilObjUser($user_id);
             $user_auth_method = $user->getAuthMode();
+            $plugin_auth_mode = $settings->read(Settings::AUTH_MODE_UPDATE);
+            $auth_mode = strcmp($user_auth_method, 'default') === 0
+                ? ilAuthUtils::_getAuthModeName(ilAuthUtils::_getAuthMode(null))
+                : $user_auth_method;
             if (
                 $settings->readAsBool(Settings::ACTIVE_UPDATE) &&
-                $settings->read(Settings::AUTH_MODE_UPDATE) == $user_auth_method
+                $settings->read(Settings::AUTH_MODE_UPDATE) == $auth_mode
             ) {
                 $login = $this->generateUsername($user);
                 $this->agu_factory->db()->repository()->updateLogin(
