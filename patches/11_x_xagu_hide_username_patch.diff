@@ -1,12 +1,11 @@
 diff --git a/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php b/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php
-index e70f65a5958..61e6cc7570c 100755
+index e70f65a5958..22e1b3e0d7a 100755
 --- a/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php
 +++ b/components/ILIAS/Registration/classes/class.ilAccountRegistrationGUI.php
-@@ -157,7 +157,14 @@ class ilAccountRegistrationGUI
-         $this->lng->loadLanguageModule('user');
-         // add fields to form
-         $this->user_profile->addFieldsToForm($this->form, Context::Registration, true, null, [Alias::class]);
--
+@@ -154,6 +154,15 @@ class ilAccountRegistrationGUI
+ 
+         $this->addLoginSectionToForm();
+ 
 +        // BEGIN Patch hide username in registration forms
 +        $xagu_plugin_settings = new ilSetting('xagu');
 +        $contexts = explode(';', $xagu_plugin_settings->get('xagu_contexts', ''));
@@ -15,19 +14,22 @@ index e70f65a5958..61e6cc7570c 100755
 +            $this->form->removeItemByPostVar("username");
 +        }
 +        // END Patch
-         $field = new ilFormSectionHeaderGUI();
-         $field->setTitle($this->lng->txt('settings'));
-         $this->form->addItem($field);
-@@ -322,17 +329,44 @@ class ilAccountRegistrationGUI
-             $login_obj->setAlert($this->lng->txt('login_invalid'));
++
+         $this->lng->loadLanguageModule('user');
+         // add fields to form
+         $this->user_profile->addFieldsToForm($this->form, Context::Registration, true, null, [Alias::class]);
+@@ -315,24 +324,44 @@ class ilAccountRegistrationGUI
              $form_valid = false;
          }
+ 
 +        // BEGIN Patch hide username in registration forms
 +        $xagu_plugin_settings = new ilSetting('xagu');
 +        $contexts = explode(';', $xagu_plugin_settings->get('xagu_contexts', ''));
 +        $is_registraton_context_enabled = in_array(1, is_array($contexts) ? $contexts : []);
 +
-+        // validate username
+         // validate username
+-        $login_obj = $this->form->getItemByPostVar('username');
+-        $login = $this->form->getInput('username');
 +
 +        if ($is_registraton_context_enabled) {
 +            $login = "registration_" . time();
@@ -36,14 +38,18 @@ index e70f65a5958..61e6cc7570c 100755
 +        if (!$is_registraton_context_enabled) {
 +            $login_obj = $this->form->getItemByPostVar('username');
 +            $login = $this->form->getInput("username");
++        } else {
++            $login_obj = null;
 +        }
- 
-+        if (!ilUtil::isLogin($login)) {
++
+         if (!ilUtil::isLogin($login)) {
+-            $login_obj->setAlert($this->lng->txt('login_invalid'));
 +            if (!$is_registraton_context_enabled) {
 +                $login_obj->setAlert($this->lng->txt("login_invalid"));
 +            }
-+            $form_valid = false;
-+        }
+             $form_valid = false;
+         }
+-
          // We should use the HTTP request stretching mechanisms here, according to Mantis #32037
 -        $username_checked_and_register_callback = function () use (&$form_valid, $login, $login_obj, $valid_role) {
 +        $username_checked_and_register_callback = function () use (&$form_valid, $login, $login_obj, $valid_role, $is_registraton_context_enabled) {
@@ -51,7 +57,6 @@ index e70f65a5958..61e6cc7570c 100755
                  if (ilObjUser::_loginExists($login)) {
 -                    $login_obj->setAlert($this->lng->txt('login_exists'));
 +                    if (!$is_registraton_context_enabled) {
-+                        $login_obj = $this->form->getItemByPostVar('username');
 +                        $login_obj->setAlert($this->lng->txt("login_exists"));
 +                    }
                      $form_valid = false;
@@ -60,13 +65,12 @@ index e70f65a5958..61e6cc7570c 100755
                      ilObjUser::_doesLoginnameExistInHistory($login)) {
 -                    $login_obj->setAlert($this->lng->txt('login_exists'));
 +                    if (!$is_registraton_context_enabled) {
-+                        $login_obj = $this->form->getItemByPostVar('username');
 +                        $login_obj->setAlert($this->lng->txt('login_exists'));
 +                    }
                      $form_valid = false;
                  }
              }
-@@ -342,6 +376,7 @@ class ilAccountRegistrationGUI
+@@ -342,6 +371,7 @@ class ilAccountRegistrationGUI
                  $this->distributeMails($password);
              }
          };
@@ -74,21 +78,37 @@ index e70f65a5958..61e6cc7570c 100755
  
          if (($register_duration = $this->settings->get('registration_duration')) !== null) {
              $duration = $this->http->durations()->callbackDuration((int) $register_duration);
-@@ -386,9 +421,14 @@ class ilAccountRegistrationGUI
+@@ -378,6 +408,22 @@ class ilAccountRegistrationGUI
+             $this->userObj->setAuthMode('local');
+         }
+ 
++        // BEGIN Patch hide username in registration forms
++        $xagu_plugin_settings = new ilSetting('xagu');
++        $contexts = explode(';', $xagu_plugin_settings->get('xagu_contexts', ''));
++        $is_registraton_context_enabled = in_array(1, is_array($contexts) ? $contexts : []);
++        if ($is_registraton_context_enabled) {
++            $login = 'login_' . time();
++            $this->userObj->setLogin($login);
++            // the user handler expects the login input, so it needs to be added to the form
++            $login_input = new ilTextInputGUI($this->lng->txt('username'), 'username');
++            $login_input->setSize(255);
++            $login_input->setRequired(true);
++            $login_input->setValue($login);
++            $this->form->addItem($login_input);
++        }
++        // END Patch
++
+         $this->userObj = $this->user_profile->addFormValuesToUser(
+             $this->form,
+             Context::Registration,
+@@ -386,10 +432,6 @@ class ilAccountRegistrationGUI
          $this->userObj->setTitle($this->userObj->getFullname());
          $this->userObj->setDescription($this->userObj->getEmail());
  
 -        $this->userObj->setLogin(
 -            $this->form->getInput('username')
 -        );
-+        // BEGIN Patch hide username in registration forms
-+        $xagu_plugin_settings = new ilSetting('xagu');
-+        $contexts = explode(';', $xagu_plugin_settings->get('xagu_contexts', ''));
-+        $is_registraton_context_enabled = in_array(1, is_array($contexts) ? $contexts : []);
-+        if ($is_registraton_context_enabled) {
-+            $this->userObj->setLogin('login_' . time());
-+        }
-+        // END Patch
- 
+-
          if ($this->registration_settings->passwordGenerationEnabled()) {
              $password = ilSecuritySettingsChecker::generatePasswords(1);
+             $password = $password[0];

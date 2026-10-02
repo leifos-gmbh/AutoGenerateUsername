@@ -21,8 +21,7 @@ class UDFHandler implements lfAGUPatternNodeUDFInterface
         if (!isset($this->field_id)) {
             return "";
         }
-        $f_field_id = "f_" . $this->field_id;
-        $field = $this->profile->getFieldByIdentifier($f_field_id);
+        $field = $this->profile->getFieldByIdentifier("f_" . $this->field_id);
         return is_null($field) ? "" : trim((string) $field->retrieveValueFromUser($this->user)) ?? "";
     }
 
