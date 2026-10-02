@@ -17,9 +17,9 @@ use Leifos\AutoGenerateUsername\DB\Settings\StyleOptions;
  */
 class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 {
-    protected const string SCREEN_COMPONENT_ID = 'pl_xagu';
-    protected const string CONFIG_SCREEN_ID = 'config_screen';
-    protected const string CONFIG_SCREEN_SUBSCREEN_MAIN_ID = 'main';
+    protected const SCREEN_COMPONENT_ID = 'pl_xagu';
+    protected const CONFIG_SCREEN_ID = 'config_screen';
+    protected const CONFIG_SCREEN_SUBSCREEN_MAIN_ID = 'main';
     protected lfAGUDFactoryInterface $agu_factory;
     protected ilAutoGenerateUsernamePlugin $pl;
     protected ilGlobalTemplateInterface $tpl;
