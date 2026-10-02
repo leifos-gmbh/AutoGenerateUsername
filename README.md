@@ -3,10 +3,10 @@ This ILIAS plugin provides an event hook to automatically create an username aft
 The username will be consisting of informations like firstname, lastname, email, a sequential number etc.
 
 **Minimum ILIAS Version:**
-10.0
+11.0
 
 **Maximum ILIAS Version:**
-10.99
+11.99
 
 **Responsible Developer:**
 Christoph Ludolf ludolf@leifos.de
@@ -30,7 +30,7 @@ cd public/Customizing/global/plugins/Services/EventHandling/EventHook/
 ```
 Download the plugin.
 ```shell
-git clone -b release_10 https://github.com/leifos-gmbh/AutoGenerateUsername.git AutoGenerateUsername
+git clone -b release_11 https://github.com/leifos-gmbh/AutoGenerateUsername.git AutoGenerateUsername
 ```
 Afterwards execute composer to build the classmaps.
 Finally navigate activate and configure the plugin in the ILIAS Administration.
@@ -44,12 +44,12 @@ Make sure you checked "Registration" on the username configuration context or ne
 Navigate to the ILIAS root directory and execute the following command to apply the patch:
 
 `````` shell
-	patch -l -p1 < public/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/10_x_xagu_hide_username_patch.diff
+	patch -l -p1 < public/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/11_x_xagu_hide_username_patch.diff
 ``````
 
-Navigate to the ILIAS root directory and execute the following command to remove the patch:
+Navigate to the ILIAS root directory and execute the follvi owing command to remove the patch:
 `````` shell
-	patch -R -p1 < public/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/10_x_xagu_hide_username_patch.diff
+	patch -R -p1 < public/Customizing/global/plugins/Services/EventHandling/EventHook/AutoGenerateUsername/patches/11_x_xagu_hide_username_patch.diff
 ```````
 
 ### New in plugin version "5.3.1"
