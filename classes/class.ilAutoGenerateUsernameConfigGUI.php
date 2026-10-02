@@ -18,6 +18,9 @@ use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
  */
 class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
 {
+    protected const string SCREEN_COMPONENT_ID = 'pl_xagu';
+    protected const string CONFIG_SCREEN_ID = 'config_screen';
+    protected const string CONFIG_SCREEN_SUBSCREEN_MAIN_ID = 'main';
     protected lfAGUDFactoryInterface $agu_factory;
     protected ilAutoGenerateUsernamePlugin $pl;
     protected ilGlobalTemplateInterface $tpl;
@@ -42,6 +45,15 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         $this->profile = $DIC['user']->getProfile();
         $this->agu_factory = new lfAGUDFactory();
         $this->pl = new ilAutoGenerateUsernamePlugin($DIC->database(), $DIC['component.repository'], 'xagu');
+        $this->setScreenId($DIC->help());
+    }
+
+    protected function setScreenId(
+        ilHelpGUI $help_gui
+    ): void {
+        $help_gui->setScreenIdComponent(self::SCREEN_COMPONENT_ID);
+        $help_gui->setScreenId(self::CONFIG_SCREEN_ID);
+        $help_gui->setSubScreenId(self::CONFIG_SCREEN_SUBSCREEN_MAIN_ID);
     }
 
     public function performCommand($cmd): void
