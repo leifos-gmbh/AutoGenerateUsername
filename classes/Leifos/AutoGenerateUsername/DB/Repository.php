@@ -2,9 +2,9 @@
 
 namespace Leifos\AutoGenerateUsername\DB;
 
-use Leifos\AutoGenerateUsername\I\DB\Repository as lfAGURepositoryInterface;
-use ilDBInterface;
 use ilDBConstants;
+use ilDBInterface;
+use Leifos\AutoGenerateUsername\I\DB\Repository as lfAGURepositoryInterface;
 use Leifos\AutoGenerateUsername\I\DB\User\Handler as lfAGUDBUserInterface;
 
 class Repository implements lfAGURepositoryInterface

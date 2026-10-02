@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Leifos\AutoGenerateUsername\DB\Settings;
 
-use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterface;
-use ilSetting;
-use ilLanguage;
-use ilUserCreationContext;
 use ilAuthUtils;
+use ilLanguage;
 use ilLDAPServer;
+use ilSetting;
+use ilUserCreationContext;
+use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterface;
 
 class Handler implements lfAGUDBSettingsInterface
 {

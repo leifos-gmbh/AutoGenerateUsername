@@ -2,9 +2,9 @@
 
 namespace Leifos\AutoGenerateUsername\I\Pattern\Node;
 
-use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterface;
 use Countable;
 use Iterator;
+use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterface;
 
 interface Collection extends Countable, Iterator
 {

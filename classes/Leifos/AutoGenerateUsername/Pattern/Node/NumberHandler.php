@@ -2,9 +2,7 @@
 
 namespace Leifos\AutoGenerateUsername\Pattern\Node;
 
-use ILIAS\UI\Implementation\Component\Table\Column\Number;
 use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterface;
-use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\NumberHandler as lfAGUPatternNodeNumberInterface;
 
 class NumberHandler implements lfAGUPatternNodeNumberInterface

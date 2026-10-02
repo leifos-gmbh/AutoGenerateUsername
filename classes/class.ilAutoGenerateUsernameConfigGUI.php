@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
+use ILIAS\HTTP\GlobalHttpState;
 use ILIAS\UI\Component\Input\Container\Form\Standard;
+use ILIAS\UI\Factory;
 use ILIAS\UI\Implementation\Component\MessageBox\MessageBox;
 use ILIAS\UI\Renderer;
-use ILIAS\UI\Factory;
-use ILIAS\HTTP\GlobalHttpState;
-use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
-use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
+use ILIAS\User\Profile\Profile as UserProfile;
 use Leifos\AutoGenerateUsername\DB\Settings\Settings;
 use Leifos\AutoGenerateUsername\DB\Settings\StyleOptions;
+use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
+use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
 
 /**
  * @ilCtrl_IsCalledBy ilAutoGenerateUsernameConfigGUI : ilObjComponentSettingsGUI
@@ -26,6 +27,7 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
     protected Factory $ui;
     protected ilCtrl $ilCtrl;
     protected GlobalHttpState $http;
+    protected UserProfile $profile;
 
     public function __construct()
     {
@@ -37,7 +39,8 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
         $this->ui = $DIC->ui()->factory();
         $this->ilCtrl = $DIC->ctrl();
         $this->http = $DIC->http();
-        $this->agu_factory = new lfAGUDFactory($this->lng, $DIC->database());
+        $this->profile = $DIC['user']->getProfile();
+        $this->agu_factory = new lfAGUDFactory();
         $this->pl = new ilAutoGenerateUsernamePlugin($DIC->database(), $DIC['component.repository'], 'xagu');
     }
 
@@ -190,11 +193,9 @@ class ilAutoGenerateUsernameConfigGUI extends ilPluginConfigGUI
     public function getUDFPlaceholder(): array
     {
         $placeholder = [];
-        $user_defined_fields = ilUserDefinedFields::_getInstance();
-        foreach ($user_defined_fields->getDefinitions() as $field_id => $definition) {
-            if ($definition['field_type'] != UDF_TYPE_WYSIWYG) {
-                $placeholder["udf_" . $field_id] = $definition['field_name'];
-            }
+        $fields = $this->profile->getAllUserDefinedFields();
+        foreach ($fields as $field_id => $field) {
+            $placeholder["udf_" . $field_id] = $field->getLabel($this->lng);
         }
         return $placeholder;
     }

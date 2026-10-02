@@ -2,33 +2,28 @@
 
 namespace Leifos\AutoGenerateUsername\Pattern\Node;
 
+use ILIAS\User\Profile\Profile as UserProfile;
 use ilObjUser;
-use ilUserDefinedFields;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\UDFHandler as lfAGUPatternNodeUDFInterface;
-use Leifos\AutoGenerateUsername\Pattern\Handler as lfAGUPattern;
 
 class UDFHandler implements lfAGUPatternNodeUDFInterface
 {
     protected ilObjUser $user;
     protected int $field_id;
 
+    public function __construct(
+        protected readonly UserProfile $profile
+    ) {
+    }
+
     public function toString(): string
     {
         if (!isset($this->field_id)) {
             return "";
         }
-        $user_defined_fields = ilUserDefinedFields::_getInstance();
-        $field_definition = $user_defined_fields->getDefinitions()[$this->field_id] ?? null;
-        $user_defined_data = $this->user->getUserDefinedData();
         $f_field_id = "f_" . $this->field_id;
-        if (
-            is_null($field_definition) ||
-            $field_definition['field_type'] === UDF_TYPE_WYSIWYG ||
-            !array_key_exists($f_field_id, $user_defined_data)
-        ) {
-            return "";
-        }
-        return trim($this->user->getUserDefinedData()[$f_field_id]) ?? "";
+        $field = $this->profile->getFieldByIdentifier($f_field_id);
+        return is_null($field) ? "" : trim((string) $field->retrieveValueFromUser($this->user)) ?? "";
     }
 
     public function formattContent(): bool

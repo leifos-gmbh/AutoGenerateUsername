@@ -3,17 +3,17 @@
 namespace Leifos\AutoGenerateUsername\Pattern;
 
 use ilObjUser;
+use Leifos\AutoGenerateUsername\DB\Settings\Settings;
 use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterface;
 use Leifos\AutoGenerateUsername\I\Pattern\Handler as lfAGUPatternInterface;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\Collection as lfAGUPatternNodeCollectionInterface;
-use Leifos\AutoGenerateUsername\Pattern\Segments as lfAGUPatternSegments;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\Factory as lfAGUPatternNodeFactoryInterface;
-use Leifos\AutoGenerateUsername\DB\Settings\Settings;
+use Leifos\AutoGenerateUsername\Pattern\Segments as lfAGUPatternSegments;
 
 class Handler implements lfAGUPatternInterface
 {
-    public const PATTERN_ALLOWED_CHARACTERS = "/[^a-zA-Z0-9_.+@!$%~\[\]\- -]/";
-    protected const DEFAULT_NAME = "invalid_login";
+    public const string PATTERN_ALLOWED_CHARACTERS = "/[^a-zA-Z0-9_.+@!$%~\[\]\- -]/";
+    protected const string DEFAULT_NAME = "invalid_login";
     protected string $pattern;
 
     public function __construct(

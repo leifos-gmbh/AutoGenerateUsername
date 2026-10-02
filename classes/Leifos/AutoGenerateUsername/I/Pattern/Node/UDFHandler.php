@@ -2,8 +2,8 @@
 
 namespace Leifos\AutoGenerateUsername\I\Pattern\Node;
 
-use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterface;
 use ilObjUser;
+use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterface;
 
 interface UDFHandler extends lfAGUPatternNodeInterface
 {

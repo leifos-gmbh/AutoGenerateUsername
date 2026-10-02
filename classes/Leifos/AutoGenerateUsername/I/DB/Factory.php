@@ -2,9 +2,9 @@
 
 namespace Leifos\AutoGenerateUsername\I\DB;
 
+use Leifos\AutoGenerateUsername\I\DB\Repository as lfAGUDBRepositoryInterface;
 use Leifos\AutoGenerateUsername\I\DB\Settings\Factory as lfAGUDBSettingsFactoryInterface;
 use Leifos\AutoGenerateUsername\I\DB\User\Factory as lfAGUDBUserFactoryInterface;
-use Leifos\AutoGenerateUsername\I\DB\Repository as lfAGUDBRepositoryInterface;
 
 interface Factory
 {

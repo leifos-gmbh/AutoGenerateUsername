@@ -2,9 +2,7 @@
 
 namespace Leifos\AutoGenerateUsername\Pattern\Node;
 
-use Leifos\AutoGenerateUsername\I\Pattern\Node\Handler as lfAGUPatternNodeInterface;
 use Leifos\AutoGenerateUsername\I\Pattern\Node\TextHandler as lfAGUPatternNodeTextInterface;
-use Leifos\AutoGenerateUsername\Pattern\Handler as lfAGUPattern;
 
 class TextHandler implements lfAGUPatternNodeTextInterface
 {

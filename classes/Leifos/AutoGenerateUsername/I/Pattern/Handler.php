@@ -3,7 +3,6 @@
 namespace Leifos\AutoGenerateUsername\I\Pattern;
 
 use ilObjUser;
-use Leifos\AutoGenerateUsername\I\DB\Settings\Handler as lfAGUDBSettingsInterface;
 
 interface Handler
 {

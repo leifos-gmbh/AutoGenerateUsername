@@ -19,7 +19,7 @@ class FirstnameHandler implements lfAGUPatternNodeFirstNameInterface
 
     public function toString(): string
     {
-        return str_replace('-', ' ', $this->user->firstname) ?? "";
+        return str_replace('-', ' ', $this->user->getFirstname()) ?? "";
     }
 
     public function formattContent(): bool

@@ -4,9 +4,10 @@
 
 declare(strict_types=1);
 
-use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
-use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
+use ILIAS\User\Context;
 use Leifos\AutoGenerateUsername\DB\Settings\Settings;
+use Leifos\AutoGenerateUsername\Factory as lfAGUDFactory;
+use Leifos\AutoGenerateUsername\I\Factory as lfAGUDFactoryInterface;
 
 class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
 {
@@ -19,7 +20,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
     ) {
         global $DIC;
         parent::__construct($db, $component_repository, $id);
-        $this->agu_factory = new lfAGUDFactory($DIC->language(), $DIC->database());
+        $this->agu_factory = new lfAGUDFactory();
     }
 
     /**
@@ -61,7 +62,7 @@ class ilAutoGenerateUsernamePlugin extends ilEventHookPlugin
             if ($settings->isValidContext($context->getCurrentContexts())) {
                 $user_obj = $a_parameter['user_obj'];
                 if ($user_obj instanceof ilObjUser) {
-                    $user_obj->updateLogin($this->generateUsername($user_obj));
+                    $user_obj->updateLogin($this->generateUsername($user_obj), Context::UserAdministration);
                 }
             }
         }
